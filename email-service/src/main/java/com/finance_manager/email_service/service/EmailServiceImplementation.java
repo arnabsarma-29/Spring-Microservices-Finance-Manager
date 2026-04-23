@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import com.finance_manager.email_service.dao.EmailDAO;
-import com.finance_manager.email_service.entity.EmailEntity;
-import com.finance_manager.email_service.exception.EmailSaveException;
-import com.finance_manager.email_service.exception.EmailSendingException;
+import com.finance_manager.email_service.mapper.EmailMapper;
 import com.finance_manager.email_service.model.EmailModel;
+import com.finance_manager.exception.CustomException;
 @Service
 @Validated
 public class EmailServiceImplementation implements EmailService
@@ -18,13 +17,16 @@ public class EmailServiceImplementation implements EmailService
 	private final JavaMailSender mailSender;
 	private final EmailDAO emailDAO;
 	private final String defaultSender;
-	public EmailServiceImplementation (JavaMailSender mailSender, EmailDAO emailDAO, @Value ("${spring.mail.username}") String defaultSender)
+	private final EmailMapper emailMapper;
+	public EmailServiceImplementation (JavaMailSender mailSender, EmailDAO emailDAO, @Value ("${spring.mail.username}") String defaultSender, EmailMapper emailMapper)
 	{
 		this.mailSender = mailSender;
 		this.emailDAO = emailDAO;
 		this.defaultSender = defaultSender;
+		this.emailMapper = emailMapper;
 	}
 	@Override
+	@Transactional
 	public void sendSimpleEmail (EmailModel emailModel)
 	{
 		SimpleMailMessage message = new SimpleMailMessage ();
@@ -38,15 +40,15 @@ public class EmailServiceImplementation implements EmailService
 		}
 		catch (Exception e)
 		{
-			throw new EmailSendingException ("Email sending failed for receiver: " + emailModel.getReceiver (), e);
+			throw new CustomException ("Email sending failed for receiver: " + emailModel.getReceiver (), e);
 		}
 		try
 		{
-			saveEmailInfo (emailModel);
+			emailDAO.saveEmailInfo (emailMapper.toEmailEntity (emailModel, defaultSender));
 		}
 		catch (Exception e)
 		{
-			throw new EmailSaveException ("Email save failed for receiver: " + emailModel.getReceiver(), e);
+			throw new CustomException ("Email save failed for receiver: " + emailModel.getReceiver(), e);
 		}
 	}
 	@Override
@@ -75,10 +77,5 @@ public class EmailServiceImplementation implements EmailService
 	{
 		emailModel.setSubject ("Monthly Summary :-");
 		sendSimpleEmail (emailModel);
-	}
-	@Transactional
-	private void saveEmailInfo (EmailModel emailModel)
-	{
-		emailDAO.saveEmailInfo (new EmailEntity (defaultSender, emailModel.getReceiver (), emailModel.getSubject (), emailModel.getBody ()));	
 	}
 }

@@ -1,11 +1,13 @@
 package com.finance_manager.budget_service.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.finance_manager.budget_service.mapper.RequestMapper;
+import com.finance_manager.budget_service.dto.BudgetDTO;
 import com.finance_manager.budget_service.model.BudgetModel;
-import com.finance_manager.budget_service.response.ResponseStructure;
 import com.finance_manager.budget_service.service.BudgetService;
+import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.response.ResponseStructure;
 import lombok.AllArgsConstructor;
 import java.util.UUID;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,20 +21,20 @@ public class BudgetController
 	private final BudgetService budgetService;
 	private final RequestMapper requestMapper;
 	@PostMapping ("/save")
-	public ResponseEntity <ResponseStructure <Object>> saveBudget (@RequestBody BudgetModel budgetModel)
+	public ResponseEntity <ResponseStructure <Void>> saveBudget (@RequestBody BudgetModel budgetModel)
 	{
 		budgetService.save (budgetModel);
-		return requestMapper.buildGenerateResponse ("Budget saved successfully!");
+		return requestMapper.buildGenerateResponse ("Budget saved successfully!", HttpStatus.CREATED);
 	}
 	@PostMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Object>> deleteBudget (UUID id)
+	public ResponseEntity <ResponseStructure <Void>> deleteBudget (UUID id)
 	{
 		budgetService.delete (id);
-		return requestMapper.buildGenerateResponse ("Budget deleted successfully!");
+		return requestMapper.buildGenerateResponse ("Budget deleted successfully!", HttpStatus.OK);
 	}
 	@GetMapping ("/getBudget")
-	public ResponseEntity <ResponseStructure <Object>> getBudget ()
+	public ResponseEntity <ResponseStructure <BudgetDTO>> getBudget ()
 	{
-		return requestMapper.buildGenerateResponse ("Budget :-", budgetService.getBudget ());
+		return requestMapper.buildGenerateResponse ("Budget :-", HttpStatus.OK, budgetService.getBudget ());
 	}
 }

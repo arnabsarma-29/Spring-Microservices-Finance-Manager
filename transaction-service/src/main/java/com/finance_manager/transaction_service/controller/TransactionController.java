@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.response.ResponseStructure;
 import com.finance_manager.transaction_service.dto.TransactionDTO;
 import com.finance_manager.transaction_service.model.TransactionModel;
-import com.finance_manager.transaction_service.response.ResponseStructure;
 import com.finance_manager.transaction_service.service.TransactionService;
-import com.finance_manager.transaction_service.util.ResponseHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,34 +21,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TransactionController
 {
 	private final TransactionService transactionService;
+	private final RequestMapper requestMapper;
 	@PostMapping ("/save")
-	public ResponseEntity <ResponseStructure <Object>> saveTransaction (@RequestBody TransactionModel transactionModel)
+	public ResponseEntity <ResponseStructure <Void>> saveTransaction (@RequestBody TransactionModel transactionModel)
 	{
 		transactionService.save (transactionModel);
-		return buildGenerateResponse ("Transaction saved successfully!");
+		return requestMapper.buildGenerateResponse ("Transaction saved successfully!", HttpStatus.CREATED);
 	}
 	@DeleteMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Object>> deleteTransaction (@RequestBody UUID id)
+	public ResponseEntity <ResponseStructure <Void>> deleteTransaction (@RequestBody UUID id)
 	{
 		transactionService.delete (id);
-		return buildGenerateResponse ("Transaction deleted successfully!");
+		return requestMapper.buildGenerateResponse ("Transaction deleted successfully!", HttpStatus.OK);
 	}
 	@GetMapping ("/getAll")
 	public ResponseEntity <ResponseStructure <List <TransactionDTO>>> getTransactions ()
 	{
-		return buildGenerateListResponse ("Transactions fetched successfully", transactionService.getAll ());
+		return requestMapper.buildGenerateResponse ("Transactions fetched successfully", HttpStatus.OK, transactionService.getAll ());
 	}
 	@GetMapping ("/getMonthlyTransactions")
 	public ResponseEntity <ResponseStructure <List <TransactionDTO>>> getMonthlyTransactions ()
 	{
-		return buildGenerateListResponse ("The Monthly Expenditure :-", transactionService.getByMonth ());
-	}
-	private ResponseEntity <ResponseStructure <Object>> buildGenerateResponse (String message)
-	{
-		return ResponseHandler.generateResponse (true, message, HttpStatus.OK, null);
-	}
-	private ResponseEntity <ResponseStructure <List <TransactionDTO>>> buildGenerateListResponse (String message, List <TransactionDTO> transactionDTOs)
-	{
-		return ResponseHandler.generateResponse (true, message, HttpStatus.OK, transactionDTOs);
+		return requestMapper.buildGenerateResponse ("The Monthly Expenditure :-", HttpStatus.OK, transactionService.getByMonth ());
 	}
 }

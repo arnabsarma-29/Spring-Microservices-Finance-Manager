@@ -5,25 +5,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.finance_manager.auth_service.dao.UserDAO;
 import com.finance_manager.auth_service.dto.UserDTO;
-import com.finance_manager.auth_service.entity.User;
-import com.finance_manager.auth_service.exception.NoSessionFound;
+import com.finance_manager.auth_service.mapper.AuthMapper;
+import com.finance_manager.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CurrentUserProvider
 {
 	private final UserDAO userDAO;
+	private final AuthMapper authMapper;
 	public UserDTO getCurrentUser ()
 	{
 		Authentication auth = SecurityContextHolder.getContext ().getAuthentication ();
 		if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken)
 		{
-			throw new NoSessionFound ("No authenticated user session found");
+			throw new CustomException ("No authenticated user session found");
 		}
-		return mapToDTO (userDAO.findByEmail (auth.getName ()).orElseThrow (() -> new NoSessionFound ("User not found in system.")));
-	}
-	private UserDTO mapToDTO (User user)
-	{
-		return UserDTO.builder ().email (user.getEmail ()).build ();
+		return userDAO.findByEmail (auth.getName ()).map (authMapper :: toUserDTO).orElseThrow (() -> new CustomException ("User not found in system."));
 	}
 }

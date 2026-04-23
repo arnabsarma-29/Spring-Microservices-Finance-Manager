@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.finance_manager.exception.CustomException;
 import com.finance_manager.transaction_service.client.UserClient;
 import com.finance_manager.transaction_service.dao.TransactionDAO;
 import com.finance_manager.transaction_service.dto.TransactionDTO;
-import com.finance_manager.transaction_service.entity.Transaction;
-import com.finance_manager.transaction_service.exception.TransactionDBException;
+import com.finance_manager.transaction_service.mapper.TransactionMapper;
 import com.finance_manager.transaction_service.model.TransactionModel;
 import lombok.AllArgsConstructor;
 @Service
@@ -17,18 +17,18 @@ public class TransactionServiceImplementation implements TransactionService
 {
 	private final TransactionDAO transactionDAO;
 	private final UserClient userClient;
+	private final TransactionMapper transactionMapper;
 	@Override
 	@Transactional
 	public void save (TransactionModel transactionModel)
 	{
-		Transaction transaction = new Transaction (userClient.getId (), transactionModel.getAmount (), transactionModel.getCategory (), transactionModel.getType ());
 		try
 		{
-			transactionDAO.save (transaction);
+			transactionDAO.save (transactionMapper.modelToEntity (transactionModel, userClient.getId ()));
 		}
 		catch (Exception e)
 		{
-			throw new TransactionDBException ("Failed to save transaction at " + LocalDateTime.now (), e);
+			throw new CustomException ("Failed to save transaction at " + LocalDateTime.now (), e);
 		}
 	}
 	@Override
@@ -41,7 +41,7 @@ public class TransactionServiceImplementation implements TransactionService
 		}
 		catch (Exception e)
 		{
-			throw new TransactionDBException ("Failed to delete transaction at " + LocalDateTime.now (), e);
+			throw new CustomException ("Failed to delete transaction at " + LocalDateTime.now (), e);
 		}
 	}
 	@Override
@@ -49,11 +49,11 @@ public class TransactionServiceImplementation implements TransactionService
 	{
 		try
 		{
-			return transactionDAO.getAll (userClient.getId ()).stream ().map (this::mapToDTO).toList ();
+			return transactionDAO.getAll (userClient.getId ()).stream ().map (transactionMapper :: entityToDTO).toList ();
 		}
 		catch (Exception e)
 		{
-			throw new TransactionDBException ("Failed to fetch transactions at " + LocalDateTime.now (), e);
+			throw new CustomException ("Failed to fetch transactions at " + LocalDateTime.now (), e);
 		}
 	}
 	@Override
@@ -65,15 +65,11 @@ public class TransactionServiceImplementation implements TransactionService
 		UUID userId = userClient.getId ();
 		try
 		{
-			return transactionDAO.getByMonth (userId, month, year).stream ().map (this::mapToDTO).toList ();
+			return transactionDAO.getByMonth (userId, month, year).stream ().map (transactionMapper :: entityToDTO).toList ();
 		}
 		catch (Exception e)
 		{
-			throw new TransactionDBException ("Failed to fetch transactions at " + LocalDateTime.now (), e);
+			throw new CustomException ("Failed to fetch transactions at " + LocalDateTime.now (), e);
 		}
-	}
-	private TransactionDTO mapToDTO (Transaction transaction)
-	{
-		return TransactionDTO.builder ().id (transaction.getId ()).userId (transaction.getUserId ()).amount (transaction.getAmount ()).category (transaction.getCategory ()).type (transaction.getType ()).build ();
 	}
 }

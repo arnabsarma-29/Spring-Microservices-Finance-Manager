@@ -12,9 +12,9 @@ import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.model.PasswordUpdateModel;
 import com.finance_manager.auth_service.model.UserLoginModel;
 import com.finance_manager.auth_service.model.UserModel;
-import com.finance_manager.auth_service.response.ResponseStructure;
 import com.finance_manager.auth_service.service.AuthService;
-import com.finance_manager.auth_service.util.ResponseHandler;
+import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.response.ResponseStructure;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 @RestController
@@ -22,28 +22,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceController
 {
+	private final RequestMapper requestMapper;
 	private final AuthService authService;
 	@PostMapping ("/signup")
 	public ResponseEntity <ResponseStructure <UserDTO>> signup (@Valid @RequestBody UserModel userModel)
 	{
-		return ResponseHandler.generateResponse (true, "User registered successfully!", HttpStatus.CREATED, authService.register (userModel));
+		return requestMapper.buildGenerateResponse ("User registered successfully!", HttpStatus.CREATED, authService.register (userModel));
 	}
 	@PostMapping ("/login")
 	public ResponseEntity <ResponseStructure <AuthResponseDTO>> login (@Valid @RequestBody UserLoginModel userLoginModel)
 	{
-		return ResponseHandler.generateResponse (true, "Login successful!", HttpStatus.OK, authService.login (userLoginModel));
+		return requestMapper.buildGenerateResponse ("Login successful!", HttpStatus.OK, authService.login (userLoginModel));
 	}
 	@PutMapping ("/updatePassword")
-	public ResponseEntity <String> updatePassword (@Valid @RequestBody PasswordUpdateModel passwordUpdateModel)
+	public ResponseEntity <ResponseStructure <String>> updatePassword (@Valid @RequestBody PasswordUpdateModel passwordUpdateModel)
 	{
 		authService.updatePassword (passwordUpdateModel);
-		return ResponseEntity.ok ("Password updated successfully!");
+		return requestMapper.buildGenerateResponse ("Password updated successfully!", HttpStatus.OK);
 	}
 	@DeleteMapping ("/delete")
-	public ResponseEntity <Void> deleteUser ()
+	public ResponseEntity <ResponseStructure <Void>> deleteUser ()
 	{
 		authService.deleteUser ();
-		return ResponseEntity.noContent ().build ();
+		return requestMapper.buildGenerateResponse("User deleted successfully!", HttpStatus.OK);
 	}
 	
 }

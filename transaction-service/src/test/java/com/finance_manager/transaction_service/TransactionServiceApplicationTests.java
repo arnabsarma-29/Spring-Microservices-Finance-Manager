@@ -1,13 +1,12 @@
 package com.finance_manager.transaction_service;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
 @SpringBootTest
-class TransactionServiceApplicationTests {
-
+class TransactionServiceApplicationTests
+{
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads ()
+	{
 
+	}
 }

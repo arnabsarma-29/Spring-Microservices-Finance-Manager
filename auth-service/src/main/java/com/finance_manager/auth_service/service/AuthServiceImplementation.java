@@ -1,6 +1,5 @@
 package com.finance_manager.auth_service.service;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +13,12 @@ import com.finance_manager.auth_service.dao.UserDAO;
 import com.finance_manager.auth_service.dto.AuthResponseDTO;
 import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.entity.User;
-import com.finance_manager.auth_service.exception.NoSessionFound;
-import com.finance_manager.auth_service.exception.UserAlreadyExists;
+import com.finance_manager.auth_service.mapper.AuthMapper;
 import com.finance_manager.auth_service.model.EmailModel;
 import com.finance_manager.auth_service.model.PasswordUpdateModel;
 import com.finance_manager.auth_service.model.UserLoginModel;
 import com.finance_manager.auth_service.model.UserModel;
+import com.finance_manager.exception.CustomException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 @Service
@@ -34,21 +33,22 @@ public class AuthServiceImplementation implements AuthService
 	private final JwtConfig jwtConfig;
 	private final CurrentUserProvider currentUserProvider;
 	private final EmailClient emailClient;
+	private final AuthMapper authMapper;
 	@Override
 	@Transactional
 	public UserDTO register (UserModel userModel)
 	{
 		if (userDAO.existsByEmail (userModel.getEmail ()))
 		{
-			throw new UserAlreadyExists ("User with email " + userModel.getEmail () + " already exists");
+			throw new CustomException ("User with email " + userModel.getEmail () + " already exists");
 		}
-		String encodedPassword = passwordEncoder.encode (userModel.getPassword ());
-		User user = User.builder ().email (userModel.getEmail ()).password (encodedPassword).build ();
-		UserDTO out = UserDTO.builder ().id (userDAO.saveUser (user).getId ()).email (user.getEmail ()).build ();
+		User user = authMapper.toUser (userModel);
+		user.setPassword (passwordEncoder.encode (user.getPassword ()));
+		User savedUser = userDAO.saveUser (user);
 		EmailModel emailRequest = new EmailModel ();
-		emailRequest.setReceiver (userModel.getEmail ());
+		emailRequest.setReceiver (savedUser.getEmail ());
 		emailClient.sendRegisterEmail (emailRequest);
-		return out;
+		return authMapper.toUserDTO (savedUser);
 	}
 	@Override
 	public AuthResponseDTO login (UserLoginModel request)
@@ -67,10 +67,10 @@ public class AuthServiceImplementation implements AuthService
 	public void updatePassword (@Valid PasswordUpdateModel passwordUpdateModel)
 	{
 		UserDTO currentUser = currentUserProvider.getCurrentUser ();
-		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new NoSessionFound ("User not found in system."));
+		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new CustomException ("User not found in system."));
 		if (!passwordEncoder.matches (passwordUpdateModel.getCurrentPassword (), user.getPassword ()))
 		{
-			throw new BadCredentialsException ("Invalid old password");
+			throw new CustomException ("Invalid old password");
 		}
 		user.setPassword (passwordEncoder.encode (passwordUpdateModel.getNewPassword ()));
 		User savedUser = userDAO.saveUser (user);
@@ -83,7 +83,7 @@ public class AuthServiceImplementation implements AuthService
 	public void deleteUser ()
 	{
 		UserDTO currentUser = currentUserProvider.getCurrentUser ();
-		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new NoSessionFound ("User record not found."));
+		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new CustomException ("User record not found."));
 		userDAO.deleteUser (user);
 	}
 }

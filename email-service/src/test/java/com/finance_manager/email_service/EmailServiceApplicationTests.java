@@ -1,13 +1,12 @@
 package com.finance_manager.email_service;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
 @SpringBootTest
-class EmailServiceApplicationTests {
-
+class EmailServiceApplicationTests
+{
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads ()
+	{
 
+	}
 }
