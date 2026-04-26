@@ -1,4 +1,5 @@
 package com.finance_manager.auth_service.service;
+import java.util.UUID;
 import com.finance_manager.auth_service.dto.AuthResponseDTO;
 import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.model.PasswordUpdateModel;
@@ -10,5 +11,7 @@ public interface AuthService
 	UserDTO register (@Valid UserModel userModel);
 	AuthResponseDTO login (@Valid UserLoginModel request);
 	void updatePassword (@Valid PasswordUpdateModel passwordUpdateModel);
-	void deleteUser ();
+	void deleteUser (String password);
+	UUID getId ();
+	String getEmail ();
 }

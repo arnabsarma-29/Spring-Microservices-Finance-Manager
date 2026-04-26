@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import com.finance_manager.email_service.dao.EmailDAO;
 import com.finance_manager.email_service.mapper.EmailMapper;
-import com.finance_manager.email_service.model.EmailModel;
 import com.finance_manager.exception.CustomException;
+import com.finance_manager.model.EmailModel;
 @Service
 @Validated
 public class EmailServiceImplementation implements EmailService

@@ -1,7 +1,9 @@
 package com.finance_manager.auth_service.controller;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import com.finance_manager.mapper.RequestMapper;
 import com.finance_manager.response.ResponseStructure;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping ("/auth")
 @RequiredArgsConstructor
@@ -41,10 +44,20 @@ public class AuthServiceController
 		return requestMapper.buildGenerateResponse ("Password updated successfully!", HttpStatus.OK);
 	}
 	@DeleteMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Void>> deleteUser ()
+	public ResponseEntity <ResponseStructure <Void>> deleteUser (String password)
 	{
-		authService.deleteUser ();
-		return requestMapper.buildGenerateResponse("User deleted successfully!", HttpStatus.OK);
+		authService.deleteUser (password);
+		return requestMapper.buildGenerateResponse ("User deleted successfully!", HttpStatus.OK);
+	}
+	@GetMapping ("/getId")
+	public UUID getId ()
+	{
+		return authService.getId ();
+	}
+	@GetMapping ("/getEmail")
+	public String getEmail ()
+	{
+		return authService.getEmail ();
 	}
 	
 }

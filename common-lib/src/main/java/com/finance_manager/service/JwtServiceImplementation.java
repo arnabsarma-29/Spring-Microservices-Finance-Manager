@@ -1,12 +1,12 @@
-package com.finance_manager.auth_service.service;
+package com.finance_manager.service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import com.finance_manager.auth_service.config.JwtConfig;
+import com.finance_manager.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -18,7 +18,13 @@ public class JwtServiceImplementation implements JwtService
 {
 	private final JwtConfig jwtConfig;
 	@Override
-	public String extractUsername (String token)
+	public UUID extractUserId (String token)
+	{
+		String userIdString = extractClaim (token, claims -> claims.get ("userId", String.class));
+		return userIdString != null ? UUID.fromString(userIdString) : null;
+	}
+	@Override
+	public String extractEmail (String token)
 	{
 		return extractClaim (token, Claims :: getSubject);
 	}
@@ -29,20 +35,16 @@ public class JwtServiceImplementation implements JwtService
 		return claimsResolver.apply (claims);
 	}
 	@Override
-	public String generateToken (UserDetails userDetails)
+	public String generateToken (UUID userId, String email)
 	{
-		return generateToken (new HashMap <> (), userDetails);
+		Map <String, Object> extraClaims = new HashMap <> ();
+		extraClaims.put ("userId", userId.toString ());
+		return Jwts.builder ().claims (extraClaims).subject (email).issuedAt (new Date (System.currentTimeMillis ())).expiration (new Date (System.currentTimeMillis () + jwtConfig.getExpiration ())).signWith (getSignInKey ()).compact ();
 	}
 	@Override
-	public String generateToken (Map <String, Object> extraClaims, UserDetails userDetails)
+	public boolean isTokenValid (String token)
 	{
-		return Jwts.builder ().claims (extraClaims).subject (userDetails.getUsername ()).issuedAt (new Date( System.currentTimeMillis ())).expiration (new Date (System.currentTimeMillis () + jwtConfig.getExpiration ())).signWith (getSignInKey ()).compact ();
-	}
-	@Override
-	public boolean isTokenValid (String token, UserDetails userDetails)
-	{
-		final String username = extractUsername(token);
-		return (username.equals (userDetails.getUsername ())) && !isTokenExpired (token);
+		return !isTokenExpired (token);
 	}
 	private boolean isTokenExpired (String token)
 	{
@@ -50,7 +52,7 @@ public class JwtServiceImplementation implements JwtService
 	}
 	private Date extractExpiration (String token)
 	{
-		return extractClaim (token, Claims::getExpiration);
+		return extractClaim (token, Claims :: getExpiration);
 	}
 	private Claims extractAllClaims (String token)
 	{

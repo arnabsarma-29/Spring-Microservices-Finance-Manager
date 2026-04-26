@@ -1,32 +1,41 @@
 package com.finance_manager.user_service.controller;
-import org.springframework.web.bind.annotation.RestController;
-import com.finance_manager.user_service.entity.User;
-import com.finance_manager.user_service.mapper.RequestMapper;
-import com.finance_manager.user_service.model.UserModel;
-import com.finance_manager.user_service.response.ResponseStructure;
-import com.finance_manager.user_service.service.UserService;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.response.ResponseStructure;
+import com.finance_manager.user_service.dto.UserDTO;
+import com.finance_manager.user_service.model.UserDeleteModel;
+import com.finance_manager.user_service.model.UserModel;
+import com.finance_manager.user_service.service.UserService;
+import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
+@RequestMapping ("/user")
 public class UserController
 {
 	private final UserService userService;
 	private final RequestMapper requestMapper;
-	@PostMapping ("path")
-	public ResponseEntity <ResponseStructure <Object>> saveUser (@RequestBody UserModel usermModel)
+	@PostMapping ("/save")
+	public ResponseEntity <ResponseStructure <Void>> saveUser (@RequestBody UserModel userModel)
 	{
-		userService.saveUser (usermModel);
-		return requestMapper.buildGenerateResponse ("User saved successfully!");
+		userService.saveUser (userModel);
+		return requestMapper.buildGenerateResponse ("User saved successfully!", HttpStatus.CREATED);
 	}
-	@DeleteMapping ("path/{id}")
-	public ResponseEntity <ResponseStructure <Object>> deleteUser (@PathVariable )
+	@DeleteMapping ("/delete")
+	public ResponseEntity <ResponseStructure <Void>> deleteUser (@RequestBody UserDeleteModel userDeleteModel)
 	{
-		return ;
+		userService.deleteUser (userDeleteModel);
+		return requestMapper.buildGenerateResponse ("User deleted successfully!", HttpStatus.OK);
+	}
+	@GetMapping ("/getUser")
+	public ResponseEntity <ResponseStructure <UserDTO>> getUser ()
+	{
+		return requestMapper.buildGenerateResponse ("User deleted successfully!", HttpStatus.OK, userService.getUser ());
 	}
 }

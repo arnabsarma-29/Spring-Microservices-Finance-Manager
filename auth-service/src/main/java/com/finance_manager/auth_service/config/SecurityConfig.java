@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.finance_manager.auth_service.security.JwtAuthFilter;
+import com.finance_manager.security.JwtAuthFilter;
 import lombok.AllArgsConstructor;
 @Configuration
 @EnableWebSecurity

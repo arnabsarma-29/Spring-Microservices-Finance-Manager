@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.finance_manager.email_service.model.EmailModel;
 import com.finance_manager.email_service.service.EmailService;
 import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.model.EmailModel;
 import com.finance_manager.response.ResponseStructure;
 import lombok.AllArgsConstructor;
 @RestController
@@ -35,7 +35,6 @@ public class EmailController
 		emailService.passwordChange (emailModel);
 		return requestMapper.buildGenerateResponse ("Password change confirmation email sent successfully!", HttpStatus.OK);
 	}
-	// This Endpoint should receive to's mail address and body
 	@PostMapping ("/sendMonthlySummaryEmail")
 	public ResponseEntity <ResponseStructure <Void>> sendMonthlySummaryEmail (@RequestBody EmailModel emailModel)
 	{

@@ -18,6 +18,5 @@ public class UserDTO
 	private UUID id;
 	@NotBlank (message = "Email can't be blank")
 	private String email;
-	@NotBlank (message = "Name can't be blank")
 	private String name;
 }

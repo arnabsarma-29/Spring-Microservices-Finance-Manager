@@ -25,4 +25,9 @@ public class AuthMapperImplementation implements AuthMapper
 	{
 		return new org.springframework.security.core.userdetails.User (user.getEmail (),user.getPassword (), java.util.Collections.emptyList ());
 	}
+	@Override
+	public User toUser (UserDTO userDTO)
+	{
+		return User.builder ().email (userDTO.getEmail ()).password (null).build ();
+	}
 }

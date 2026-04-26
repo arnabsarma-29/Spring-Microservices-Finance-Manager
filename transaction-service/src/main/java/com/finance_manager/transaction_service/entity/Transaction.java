@@ -25,10 +25,10 @@ public class Transaction extends BaseEntity
 	private String category;
 	@Enumerated (EnumType.STRING)
 	@Column (nullable = false)
-	private String type;
+	private TransactionType type;
 	@Column (nullable = false)
 	private LocalDateTime localDateTime;
-	public Transaction (UUID userId, Double amount, String category, String type)
+	public Transaction (UUID userId, Double amount, String category, TransactionType type)
 	{
 		this.userId = userId;
 		this.amount = amount;

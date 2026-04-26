@@ -1,13 +1,13 @@
-package com.finance_manager.auth_service.security;
+package com.finance_manager.security;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.UUID;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.finance_manager.auth_service.service.CustomUserDetailsService;
-import com.finance_manager.auth_service.service.JwtService;
+import com.finance_manager.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthFilter extends OncePerRequestFilter
 {
 	private final JwtService jwtService;
-	private final CustomUserDetailsService userDetailsService;
 	@Override
 	protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
 	{
@@ -33,13 +32,14 @@ public class JwtAuthFilter extends OncePerRequestFilter
 		String token = authHeader.substring (7);
 		try
 		{
-			String email = jwtService.extractUsername (token);
-			if (email != null && SecurityContextHolder.getContext ().getAuthentication () == null)
+			if (jwtService.isTokenValid (token))
 			{
-				UserDetails userDetails = userDetailsService.loadUserByUsername (email);
-				if (jwtService.isTokenValid (token, userDetails))
+				UUID userId = jwtService.extractUserId (token);
+				String email = jwtService.extractEmail (token);
+				if (userId != null && SecurityContextHolder.getContext ().getAuthentication () == null)
 				{
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken (userDetails, null, userDetails.getAuthorities ());
+					CustomPrincipal principal = new CustomPrincipal (userId, email);
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken (principal, null, Collections.emptyList ());
 					authToken.setDetails (new WebAuthenticationDetailsSource ().buildDetails (request));
 					SecurityContextHolder.getContext ().setAuthentication (authToken);
 				}

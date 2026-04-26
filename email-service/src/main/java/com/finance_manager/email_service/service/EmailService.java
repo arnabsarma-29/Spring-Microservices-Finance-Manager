@@ -1,5 +1,5 @@
 package com.finance_manager.email_service.service;
-import com.finance_manager.email_service.model.EmailModel;
+import com.finance_manager.model.EmailModel;
 import jakarta.validation.Valid;
 public interface EmailService
 {

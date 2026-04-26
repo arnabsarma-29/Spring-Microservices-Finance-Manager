@@ -1,6 +1,8 @@
 package com.finance_manager.transaction_service.dto;
+import java.time.LocalDateTime;
 import java.util.UUID;
-import jakarta.validation.constraints.NotBlank;
+import com.finance_manager.transaction_service.entity.TransactionType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +15,13 @@ import lombok.Setter;
 @Builder
 public class TransactionDTO
 {
-	@NotBlank
+	@NotNull
 	private UUID id;
-	@NotBlank
+	@NotNull
 	private UUID userId;
 	private Double amount;
 	private String category;
-	private String type;
+	private TransactionType type;
+	@NotNull
+	private LocalDateTime localDateTime;
 }

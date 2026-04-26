@@ -4,17 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 @Entity
 @Table (name = "user_profile")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
 public class User
 {
@@ -22,6 +16,5 @@ public class User
 	private UUID id;
 	@Column (nullable = false)
 	private String email;
-	@Column (nullable = false)
 	private String name;
 }

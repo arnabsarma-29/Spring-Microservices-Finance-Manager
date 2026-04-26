@@ -1,4 +1,5 @@
 package com.finance_manager.transaction_service.model;
+import com.finance_manager.transaction_service.entity.TransactionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,5 +17,5 @@ public class TransactionModel
 	@NotBlank
 	private String category;
 	@NotBlank
-	private String type; // INCOME / EXPENSE
+	private TransactionType type; // INCOME / EXPENSE
 }

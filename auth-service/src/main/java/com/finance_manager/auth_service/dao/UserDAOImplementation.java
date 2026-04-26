@@ -1,5 +1,6 @@
 package com.finance_manager.auth_service.dao;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Repository;
 import com.finance_manager.auth_service.entity.User;
 import com.finance_manager.auth_service.repository.UserRepository;
@@ -28,5 +29,10 @@ public class UserDAOImplementation implements UserDAO
 	public void deleteUser (User user)
 	{
 		userRepository.delete (user);
+	}
+	@Override
+	public Optional <User> findById (UUID id)
+	{
+		return userRepository.findById (id);
 	}
 }

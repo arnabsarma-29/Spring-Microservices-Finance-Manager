@@ -13,6 +13,6 @@ public class TransactionMapperImplementation implements TransactionMapper
 	@Override
 	public TransactionDTO entityToDTO (Transaction transaction)
 	{
-		return TransactionDTO.builder ().id (transaction.getId ()).userId (transaction.getUserId ()).amount (transaction.getAmount ()).category (transaction.getCategory ()).type (transaction.getType ()).build ();
+		return TransactionDTO.builder ().id (transaction.getId ()).userId (transaction.getUserId ()).amount (transaction.getAmount ()).category (transaction.getCategory ()).type (transaction.getType ()).localDateTime (transaction.getLocalDateTime ()).build ();
 	}
 }

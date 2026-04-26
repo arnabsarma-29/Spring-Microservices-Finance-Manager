@@ -1,24 +1,28 @@
 package com.finance_manager.auth_service.service;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import com.finance_manager.auth_service.client.EmailClient;
-import com.finance_manager.auth_service.config.JwtConfig;
+import com.finance_manager.auth_service.client.UserClient;
 import com.finance_manager.auth_service.dao.UserDAO;
 import com.finance_manager.auth_service.dto.AuthResponseDTO;
 import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.entity.User;
 import com.finance_manager.auth_service.mapper.AuthMapper;
-import com.finance_manager.auth_service.model.EmailModel;
 import com.finance_manager.auth_service.model.PasswordUpdateModel;
 import com.finance_manager.auth_service.model.UserLoginModel;
 import com.finance_manager.auth_service.model.UserModel;
+import com.finance_manager.config.JwtConfig;
 import com.finance_manager.exception.CustomException;
+import com.finance_manager.model.EmailModel;
+import com.finance_manager.security.CustomPrincipal;
+import com.finance_manager.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 @Service
@@ -31,9 +35,9 @@ public class AuthServiceImplementation implements AuthService
 	private final AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
 	private final JwtConfig jwtConfig;
-	private final CurrentUserProvider currentUserProvider;
 	private final EmailClient emailClient;
 	private final AuthMapper authMapper;
+	private final UserClient userClient;
 	@Override
 	@Transactional
 	public UserDTO register (UserModel userModel)
@@ -43,6 +47,7 @@ public class AuthServiceImplementation implements AuthService
 			throw new CustomException ("User with email " + userModel.getEmail () + " already exists");
 		}
 		User user = authMapper.toUser (userModel);
+		userClient.saveUser (userModel);
 		user.setPassword (passwordEncoder.encode (user.getPassword ()));
 		User savedUser = userDAO.saveUser (user);
 		EmailModel emailRequest = new EmailModel ();
@@ -53,9 +58,9 @@ public class AuthServiceImplementation implements AuthService
 	@Override
 	public AuthResponseDTO login (UserLoginModel request)
 	{
-		Authentication authentication = authenticationManager.authenticate (new UsernamePasswordAuthenticationToken (request.getEmail (), request.getPassword ()));
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal ();
-		String token = jwtService.generateToken (userDetails);
+		authenticationManager.authenticate (new UsernamePasswordAuthenticationToken (request.getEmail (), request.getPassword ()));
+		User user = userDAO.findByEmail (request.getEmail ()).orElseThrow (() -> new CustomException ("User record not found after authentication."));
+		String token = jwtService.generateToken (user.getId (), user.getEmail ());
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO (token, "Bearer", jwtConfig.getExpiration ());
 		EmailModel emailRequest = new EmailModel ();
 		emailRequest.setReceiver (request.getEmail ());
@@ -66,8 +71,8 @@ public class AuthServiceImplementation implements AuthService
 	@Transactional
 	public void updatePassword (@Valid PasswordUpdateModel passwordUpdateModel)
 	{
-		UserDTO currentUser = currentUserProvider.getCurrentUser ();
-		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new CustomException ("User not found in system."));
+		CustomPrincipal principal = getCurrentUser ().orElseThrow (() -> new CustomException ("User not authenticated"));
+		User user = userDAO.findById (principal.getId ()).orElseThrow (() -> new CustomException ("User not found."));
 		if (!passwordEncoder.matches (passwordUpdateModel.getCurrentPassword (), user.getPassword ()))
 		{
 			throw new CustomException ("Invalid old password");
@@ -80,10 +85,29 @@ public class AuthServiceImplementation implements AuthService
 	}
 	@Override
 	@Transactional
-	public void deleteUser ()
+	public void deleteUser (String password)
 	{
-		UserDTO currentUser = currentUserProvider.getCurrentUser ();
-		User user = userDAO.findByEmail (currentUser.getEmail ()).orElseThrow (() -> new CustomException ("User record not found."));
+		CustomPrincipal principal = getCurrentUser ().orElseThrow (() -> new CustomException ("User not authenticated"));
+		User user = userDAO.findById (principal.getId ()).orElseThrow (() -> new CustomException ("User not found."));
+		if (!passwordEncoder.matches (password, user.getPassword ()))
+		{
+			throw new CustomException ("Incorrect password");
+		}
 		userDAO.deleteUser (user);
+	}
+	@Override
+	public UUID getId ()
+	{
+		return getCurrentUser ().map (CustomPrincipal :: getId).orElseThrow (() -> new CustomException ("User not authenticated"));
+	}
+	@Override
+	public String getEmail ()
+	{
+		return getCurrentUser ().map (CustomPrincipal :: getEmail).orElseThrow (() -> new CustomException ("User not authenticated"));
+	}
+	private Optional <CustomPrincipal> getCurrentUser ()
+	{
+		Object principal = SecurityContextHolder.getContext ().getAuthentication ().getPrincipal ();
+		return (principal instanceof CustomPrincipal) ? Optional.of ((CustomPrincipal) principal) : Optional.empty ();
 	}
 }

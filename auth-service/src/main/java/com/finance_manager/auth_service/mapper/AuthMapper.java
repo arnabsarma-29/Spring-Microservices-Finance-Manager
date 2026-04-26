@@ -9,4 +9,5 @@ public interface AuthMapper
 	User toUser (UserLoginModel userLoginModel);
 	UserDTO toUserDTO (User user);
 	org.springframework.security.core.userdetails.UserDetails toUserDetails (User user);
+	User toUser (UserDTO userDTO);
 }

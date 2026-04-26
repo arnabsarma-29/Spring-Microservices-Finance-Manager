@@ -1,9 +1,16 @@
 package com.finance_manager.user_service.service;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.finance_manager.exception.CustomException;
+import com.finance_manager.security.CustomPrincipal;
+import com.finance_manager.user_service.client.AuthClient;
 import com.finance_manager.user_service.dao.UserDAO;
 import com.finance_manager.user_service.dto.UserDTO;
 import com.finance_manager.user_service.mapper.UserMapper;
+import com.finance_manager.user_service.model.UserDeleteModel;
 import com.finance_manager.user_service.model.UserModel;
 import lombok.AllArgsConstructor;
 @Service
@@ -12,6 +19,7 @@ public class UserServiceImplementation implements UserService
 {
 	private final UserDAO userDAO;
 	private final UserMapper userMapper;
+	private final AuthClient authClient;
 	@Transactional
 	@Override
 	public void saveUser (UserModel userModel)
@@ -22,25 +30,33 @@ public class UserServiceImplementation implements UserService
 		}
 		catch (Exception e)
 		{
-			throw new Exception ();
+			throw new CustomException ("Failed to save user at " + LocalDateTime.now (), e);
 		}
 	}
 	@Transactional
 	@Override
 	public void deleteUser (UserDeleteModel userDeleteModel)
 	{
+		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("Current User Not Found!"));
 		try
 		{
-			userDAO.deleteUser (userDeleteModel.getId ());
+			userDAO.deleteUser (userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("User Not Found")));
+			authClient.deleteUser (userDeleteModel.getPassword ());
 		}
 		catch (Exception e)
 		{
-			throw new Exception ();
+			throw new CustomException ("Failed to delete transaction at " + LocalDateTime.now (), e);
 		}
 	}
 	@Override
 	public UserDTO getUser ()
 	{
-		return userMapper.toUserDTO (userDAO.getUser (user));
+		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("Current User Not Found!"));
+		return userMapper.toUserDTO (userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("Unable to find user at " + LocalDateTime.now ())));
+	}
+	private Optional <CustomPrincipal> getCurrentUser ()
+	{
+		Object principal = SecurityContextHolder.getContext ().getAuthentication ().getPrincipal ();
+		return (principal instanceof CustomPrincipal) ? Optional.of ((CustomPrincipal) principal) : Optional.empty ();
 	}
 }
