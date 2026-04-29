@@ -5,10 +5,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.finance_manager.budget_service.dao.BudgetDAO;
-import com.finance_manager.budget_service.dto.BudgetDTO;
 import com.finance_manager.budget_service.mapper.BudgetMapper;
-import com.finance_manager.budget_service.model.BudgetModel;
+import com.finance_manager.dto.BudgetDTO;
 import com.finance_manager.exception.CustomException;
+import com.finance_manager.model.BudgetModel;
 import com.finance_manager.security.CustomPrincipal;
 import lombok.AllArgsConstructor;
 @Service

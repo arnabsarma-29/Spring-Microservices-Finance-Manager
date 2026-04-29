@@ -1,7 +1,7 @@
-package com.finance_manager.transaction_service.dto;
+package com.finance_manager.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import com.finance_manager.transaction_service.entity.TransactionType;
+import com.finance_manager.util.TransactionType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

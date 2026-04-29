@@ -1,5 +1,5 @@
-package com.finance_manager.auth_service.dto;
-import java.util.UUID;
+package com.finance_manager.model;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO
+public class UserModel
 {
-	private UUID id;
+	@NotBlank (message = "Email can't be blank")
 	private String email;
+	private String name;
 }

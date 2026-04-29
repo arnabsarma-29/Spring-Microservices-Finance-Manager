@@ -11,16 +11,16 @@ import org.springframework.validation.annotation.Validated;
 import com.finance_manager.auth_service.client.EmailClient;
 import com.finance_manager.auth_service.client.UserClient;
 import com.finance_manager.auth_service.dao.UserDAO;
-import com.finance_manager.auth_service.dto.AuthResponseDTO;
-import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.entity.User;
 import com.finance_manager.auth_service.mapper.AuthMapper;
-import com.finance_manager.auth_service.model.PasswordUpdateModel;
-import com.finance_manager.auth_service.model.UserLoginModel;
-import com.finance_manager.auth_service.model.UserModel;
 import com.finance_manager.config.JwtConfig;
+import com.finance_manager.dto.AuthResponseDTO;
+import com.finance_manager.dto.AuthUserDTO;
 import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.EmailModel;
+import com.finance_manager.model.PasswordUpdateModel;
+import com.finance_manager.model.UserLoginModel;
+import com.finance_manager.model.AdminUserModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.service.JwtService;
 import jakarta.validation.Valid;
@@ -40,7 +40,7 @@ public class AuthServiceImplementation implements AuthService
 	private final UserClient userClient;
 	@Override
 	@Transactional
-	public UserDTO register (UserModel userModel)
+	public AuthUserDTO register (AdminUserModel userModel)
 	{
 		if (userDAO.existsByEmail (userModel.getEmail ()))
 		{

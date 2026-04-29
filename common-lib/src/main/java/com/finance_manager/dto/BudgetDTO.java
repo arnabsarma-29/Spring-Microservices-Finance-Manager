@@ -1,4 +1,4 @@
-package com.finance_manager.budget_service.dto;
+package com.finance_manager.dto;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;

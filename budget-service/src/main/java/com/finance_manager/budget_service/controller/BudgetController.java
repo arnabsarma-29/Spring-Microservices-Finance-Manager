@@ -1,9 +1,9 @@
 package com.finance_manager.budget_service.controller;
 import org.springframework.web.bind.annotation.RestController;
-import com.finance_manager.budget_service.dto.BudgetDTO;
-import com.finance_manager.budget_service.model.BudgetModel;
 import com.finance_manager.budget_service.service.BudgetService;
+import com.finance_manager.dto.BudgetDTO;
 import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.model.BudgetModel;
 import com.finance_manager.response.ResponseStructure;
 import lombok.AllArgsConstructor;
 import java.util.UUID;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 @RestController
 @AllArgsConstructor
 @RequestMapping ("/budget")
@@ -26,11 +27,11 @@ public class BudgetController
 		budgetService.save (budgetModel);
 		return requestMapper.buildGenerateResponse ("Budget saved successfully!", HttpStatus.CREATED);
 	}
-	@PostMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Void>> deleteBudget (UUID id)
+	@PatchMapping ("/delete")
+	public ResponseEntity <ResponseStructure <Void>> editBudget (UUID id)
 	{
-		budgetService.delete (id);
-		return requestMapper.buildGenerateResponse ("Budget deleted successfully!", HttpStatus.OK);
+		budgetService.edit (id);
+		return requestMapper.buildGenerateResponse ("Budget edited successfully!", HttpStatus.OK);
 	}
 	@GetMapping ("/getBudget")
 	public ResponseEntity <ResponseStructure <BudgetDTO>> getBudget ()

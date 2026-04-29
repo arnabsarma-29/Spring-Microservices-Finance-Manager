@@ -1,4 +1,4 @@
-package com.finance_manager.auth_service.dto;
+package com.finance_manager.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

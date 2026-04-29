@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.finance_manager.dto.TransactionDTO;
 import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.model.TransactionModel;
 import com.finance_manager.response.ResponseStructure;
-import com.finance_manager.transaction_service.dto.TransactionDTO;
-import com.finance_manager.transaction_service.model.TransactionModel;
 import com.finance_manager.transaction_service.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;

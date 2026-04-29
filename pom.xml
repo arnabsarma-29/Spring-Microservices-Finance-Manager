@@ -16,6 +16,7 @@
                 <module>auth-service</module>
                 <module>budget-service</module>
                 <module>email-service</module>
+                <module>frontend-service</module>
                 <module>transaction-service</module>
                 <module>user-service</module>
         </modules>
@@ -27,7 +28,6 @@
         </properties>
         <dependencyManagement>
                 <dependencies>
-                        <!-- Source: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
                         <dependency>
                                 <groupId>org.springframework.cloud</groupId>
                                 <artifactId>spring-cloud-dependencies</artifactId>

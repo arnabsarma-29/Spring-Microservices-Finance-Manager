@@ -4,14 +4,16 @@ import java.util.Optional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.finance_manager.dto.UserDTO;
 import com.finance_manager.exception.CustomException;
+import com.finance_manager.model.UserDeleteModel;
+import com.finance_manager.model.UserModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.user_service.client.AuthClient;
 import com.finance_manager.user_service.dao.UserDAO;
-import com.finance_manager.user_service.dto.UserDTO;
 import com.finance_manager.user_service.mapper.UserMapper;
-import com.finance_manager.user_service.model.UserDeleteModel;
-import com.finance_manager.user_service.model.UserModel;
+
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor

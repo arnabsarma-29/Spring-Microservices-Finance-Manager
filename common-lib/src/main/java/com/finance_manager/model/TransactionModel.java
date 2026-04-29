@@ -1,9 +1,8 @@
-package com.finance_manager.budget_service.model;
-import java.util.UUID;
+package com.finance_manager.model;
+import com.finance_manager.util.TransactionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,15 +10,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class BudgetModel
+public class TransactionModel
 {
 	@NotNull
-	private UUID userId;
+	private Double amount;
 	@NotBlank
-	private String category; // FOOD, RENT, etc.
-	@NotNull
-	private Double limitAmount;
+	private String category;
 	@NotBlank
-	private String month;
+	private TransactionType type; // INCOME / EXPENSE
 }

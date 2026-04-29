@@ -1,12 +1,12 @@
 package com.finance_manager.auth_service.mapper;
-import com.finance_manager.auth_service.dto.UserDTO;
 import com.finance_manager.auth_service.entity.User;
-import com.finance_manager.auth_service.model.UserLoginModel;
-import com.finance_manager.auth_service.model.UserModel;
+import com.finance_manager.dto.AuthUserDTO;
+import com.finance_manager.model.UserLoginModel;
+import com.finance_manager.model.AdminUserModel;
 public class AuthMapperImplementation implements AuthMapper
 {
 	@Override
-	public User toUser (UserModel userModel)
+	public User toUser (AdminUserModel userModel)
 	{
 		return User.builder ().email (userModel.getEmail ()).password (userModel.getPassword ()).build ();
 	}
@@ -16,9 +16,9 @@ public class AuthMapperImplementation implements AuthMapper
 		return User.builder ().email (userLoginModel.getEmail ()).password (userLoginModel.getPassword ()).build ();
 	}
 	@Override
-	public UserDTO toUserDTO (User user)
+	public AuthUserDTO toUserDTO (User user)
 	{
-		return UserDTO.builder ().id (user.getId ()).email (user.getEmail ()).build ();
+		return AuthUserDTO.builder ().id (user.getId ()).email (user.getEmail ()).build ();
 	}
 	@Override
 	public org.springframework.security.core.userdetails.UserDetails toUserDetails (User user)
@@ -26,7 +26,7 @@ public class AuthMapperImplementation implements AuthMapper
 		return new org.springframework.security.core.userdetails.User (user.getEmail (),user.getPassword (), java.util.Collections.emptyList ());
 	}
 	@Override
-	public User toUser (UserDTO userDTO)
+	public User toUser (AuthUserDTO userDTO)
 	{
 		return User.builder ().email (userDTO.getEmail ()).password (null).build ();
 	}

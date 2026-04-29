@@ -8,14 +8,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.finance_manager.dto.TransactionDTO;
 import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.EmailModel;
+import com.finance_manager.model.TransactionModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.transaction_service.client.EmailClient;
 import com.finance_manager.transaction_service.dao.TransactionDAO;
-import com.finance_manager.transaction_service.dto.TransactionDTO;
 import com.finance_manager.transaction_service.mapper.TransactionMapper;
-import com.finance_manager.transaction_service.model.TransactionModel;
+
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor

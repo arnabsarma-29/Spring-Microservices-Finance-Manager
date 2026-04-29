@@ -1,4 +1,4 @@
-package com.finance_manager.user_service.model;
+package com.finance_manager.model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 @Data
