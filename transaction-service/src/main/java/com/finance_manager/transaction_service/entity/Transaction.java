@@ -1,9 +1,7 @@
 package com.finance_manager.transaction_service.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import com.finance_manager.util.TransactionType;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

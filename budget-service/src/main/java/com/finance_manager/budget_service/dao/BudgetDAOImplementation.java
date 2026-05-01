@@ -1,5 +1,5 @@
 package com.finance_manager.budget_service.dao;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
 import com.finance_manager.budget_service.entity.Budget;
@@ -26,8 +26,13 @@ public class BudgetDAOImplementation implements BudgetDAO
 		budgetRepository.deleteById (id);
 	}
 	@Override
-	public Optional <Budget> getBudget (UUID id)
+	public void deleteAll (UUID userId)
 	{
-		return budgetRepository.findById (id);
+		budgetRepository.deleteByUserId (userId);
+	}
+	@Override
+	public List <Budget> getAllBudgets (UUID id)
+	{
+		return budgetRepository.findAllByUserId (id);
 	}
 }

@@ -6,6 +6,7 @@ public interface TransactionDAO
 {
 	void save (Transaction transaction);
 	void delete (UUID id);
+	void deleteAll (UUID userId);
 	List <Transaction> getAll (UUID id);
 	List <Transaction> getByMonth (UUID userId, int month, int year);
 }

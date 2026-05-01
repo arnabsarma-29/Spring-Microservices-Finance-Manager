@@ -21,6 +21,11 @@ public class TransactionDAOImplementation implements TransactionDAO
 		transactionRepository.deleteById (id);
 	}
 	@Override
+	public void deleteAll (UUID userId)
+	{
+		transactionRepository.deleteAllByUserId (userId);
+	}
+	@Override
 	public List <Transaction> getAll (UUID id)
 	{
 		return transactionRepository.findByUserId (id);

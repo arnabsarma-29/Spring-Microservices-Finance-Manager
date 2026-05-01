@@ -23,6 +23,4 @@ public class Budget extends BaseEntity
 	private String category;
 	@Column (nullable = false)
 	private Double limitAmount;
-	@Column (nullable = false)
-	private String month;
 }

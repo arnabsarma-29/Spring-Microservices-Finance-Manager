@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.finance_manager.dto.TransactionDTO;
 import com.finance_manager.mapper.RequestMapper;
 import com.finance_manager.model.TransactionModel;
@@ -29,10 +29,16 @@ public class TransactionController
 		transactionService.save (transactionModel);
 		return requestMapper.buildGenerateResponse ("Transaction saved successfully!", HttpStatus.CREATED);
 	}
-	@DeleteMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Void>> deleteTransaction (@RequestBody UUID id)
+	@DeleteMapping ("/delete/{id}")
+	public ResponseEntity <ResponseStructure <Void>> deleteTransaction (@RequestParam UUID id)
 	{
 		transactionService.delete (id);
+		return requestMapper.buildGenerateResponse ("Transaction deleted successfully!", HttpStatus.OK);
+	}
+	@DeleteMapping ("/delete/{id}")
+	public ResponseEntity <ResponseStructure <Void>> deleteAllTransactions (@RequestParam UUID id)
+	{
+		transactionService.deleteAll (id);
 		return requestMapper.buildGenerateResponse ("Transaction deleted successfully!", HttpStatus.OK);
 	}
 	@GetMapping ("/getAll")

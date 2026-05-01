@@ -12,4 +12,5 @@ public interface TransactionRepository extends JpaRepository <Transaction, UUID>
 	List <Transaction> findByUserId (UUID userId);
 	@Query ("SELECT t FROM Transaction t WHERE t.userId = :userId " + "AND FUNCTION ('MONTH', t.localDateTime) = :month " + "AND FUNCTION ('YEAR', t.localDateTime) = :year")
 	List <Transaction> getByMonth (@Param ("userId") UUID userId, @Param ("month") int month, @Param ("year") int year);
+	void deleteAllByUserId (UUID userId);
 }

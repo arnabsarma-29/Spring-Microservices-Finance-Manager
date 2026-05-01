@@ -10,5 +10,4 @@ public class BudgetDTO
 	private UUID userId;
 	private String category;
 	private Double limitAmount;
-	private String month;
 }

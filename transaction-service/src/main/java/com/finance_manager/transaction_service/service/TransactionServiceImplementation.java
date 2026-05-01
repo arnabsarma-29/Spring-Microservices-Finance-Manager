@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.finance_manager.dto.TransactionDTO;
 import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.EmailModel;
@@ -17,7 +16,6 @@ import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.transaction_service.client.EmailClient;
 import com.finance_manager.transaction_service.dao.TransactionDAO;
 import com.finance_manager.transaction_service.mapper.TransactionMapper;
-
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
@@ -52,6 +50,12 @@ public class TransactionServiceImplementation implements TransactionService
 		{
 			throw new CustomException ("Failed to delete transaction at " + LocalDateTime.now (), e);
 		}
+	}
+	@Override
+	@Transactional
+	public void deleteAll (UUID userId)
+	{
+		transactionDAO.deleteAll (userId);
 	}
 	@Override
 	public List <TransactionDTO> getAll ()

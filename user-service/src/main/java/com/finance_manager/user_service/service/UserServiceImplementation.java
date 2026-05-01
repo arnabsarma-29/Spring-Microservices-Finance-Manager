@@ -4,16 +4,16 @@ import java.util.Optional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.finance_manager.dto.UserDTO;
 import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.UserDeleteModel;
 import com.finance_manager.model.UserModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.user_service.client.AuthClient;
+import com.finance_manager.user_service.client.BudgetClient;
+import com.finance_manager.user_service.client.TransactionClient;
 import com.finance_manager.user_service.dao.UserDAO;
 import com.finance_manager.user_service.mapper.UserMapper;
-
 import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
@@ -22,6 +22,8 @@ public class UserServiceImplementation implements UserService
 	private final UserDAO userDAO;
 	private final UserMapper userMapper;
 	private final AuthClient authClient;
+	private final BudgetClient budgetClient;
+	private final TransactionClient transactionClient;
 	@Transactional
 	@Override
 	public void saveUser (UserModel userModel)
@@ -44,10 +46,12 @@ public class UserServiceImplementation implements UserService
 		{
 			userDAO.deleteUser (userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("User Not Found")));
 			authClient.deleteUser (userDeleteModel.getPassword ());
+			budgetClient.deleteAllBudget (customPrincipal.getId ());
+			transactionClient.deleteAllTransactions (customPrincipal.getId ());
 		}
 		catch (Exception e)
 		{
-			throw new CustomException ("Failed to delete transaction at " + LocalDateTime.now (), e);
+			throw new CustomException ("Failed to delete user at " + LocalDateTime.now (), e);
 		}
 	}
 	@Override
