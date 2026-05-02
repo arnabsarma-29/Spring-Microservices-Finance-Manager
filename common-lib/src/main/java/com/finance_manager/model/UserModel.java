@@ -1,14 +1,8 @@
 package com.finance_manager.model;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+import lombok.Data;
+@Data
 @Builder
 public class UserModel
 {

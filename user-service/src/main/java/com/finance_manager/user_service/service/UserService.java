@@ -5,6 +5,7 @@ import com.finance_manager.model.UserModel;
 public interface UserService
 {
 	void saveUser (UserModel userModel);
+	void editName (String name);
 	void deleteUser (UserDeleteModel userDeleteModel);
 	UserDTO getUser ();
 }

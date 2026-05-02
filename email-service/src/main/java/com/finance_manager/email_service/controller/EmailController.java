@@ -17,20 +17,20 @@ public class EmailController
 {
 	private final EmailService emailService;
 	private final RequestMapper requestMapper;
-	@PostMapping ("/register")
-	public ResponseEntity <ResponseStructure <Void>> registerEmail (@RequestBody EmailModel emailModel)
+	@PostMapping ("/sendRegisterEmail")
+	public ResponseEntity <ResponseStructure <Void>> sendRegisterEmail (@RequestBody EmailModel emailModel)
 	{
 		emailService.registerEmail (emailModel);
 		return requestMapper.buildGenerateResponse ("Registration email sent successfully!", HttpStatus.OK);
 	}
-	@PostMapping ("/login")
-	public ResponseEntity <ResponseStructure <Void>> loginEmail (@RequestBody EmailModel emailModel)
+	@PostMapping ("/sendLoginEmail")
+	public ResponseEntity <ResponseStructure <Void>> sendLoginEmail (@RequestBody EmailModel emailModel)
 	{
 		emailService.loginEmail (emailModel);
 		return requestMapper.buildGenerateResponse ("Login alert email sent successfully!", HttpStatus.OK);
 	}
-	@PostMapping ("/passwordChange")
-	public ResponseEntity <ResponseStructure <Void>> passwordChange (@RequestBody EmailModel emailModel)
+	@PostMapping ("/sendPasswordChangeEmail")
+	public ResponseEntity <ResponseStructure <Void>> sendPasswordChangeEmail (@RequestBody EmailModel emailModel)
 	{
 		emailService.passwordChange (emailModel);
 		return requestMapper.buildGenerateResponse ("Password change confirmation email sent successfully!", HttpStatus.OK);

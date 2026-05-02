@@ -19,7 +19,6 @@ import com.finance_manager.model.AdminUserModel;
 import com.finance_manager.response.ResponseStructure;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping ("/auth")
 @RequiredArgsConstructor
@@ -43,8 +42,8 @@ public class AuthServiceController
 		authService.updatePassword (passwordUpdateModel);
 		return requestMapper.buildGenerateResponse ("Password updated successfully!", HttpStatus.OK);
 	}
-	@DeleteMapping ("/delete")
-	public ResponseEntity <ResponseStructure <Void>> deleteUser (String password)
+	@DeleteMapping ("/deleteAuthUser")
+	public ResponseEntity <ResponseStructure <Void>> deleteAuthUser (@RequestBody String password)
 	{
 		authService.deleteUser (password);
 		return requestMapper.buildGenerateResponse ("User deleted successfully!", HttpStatus.OK);
@@ -58,6 +57,5 @@ public class AuthServiceController
 	public String getEmail ()
 	{
 		return authService.getEmail ();
-	}
-	
+	}	
 }

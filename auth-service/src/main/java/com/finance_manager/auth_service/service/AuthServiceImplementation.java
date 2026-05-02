@@ -20,10 +20,10 @@ import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.EmailModel;
 import com.finance_manager.model.PasswordUpdateModel;
 import com.finance_manager.model.UserLoginModel;
+import com.finance_manager.model.UserModel;
 import com.finance_manager.model.AdminUserModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.service.JwtService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 @Service
 @Validated
@@ -40,16 +40,17 @@ public class AuthServiceImplementation implements AuthService
 	private final UserClient userClient;
 	@Override
 	@Transactional
-	public AuthUserDTO register (AdminUserModel userModel)
+	public AuthUserDTO register (AdminUserModel adminUserModel)
 	{
-		if (userDAO.existsByEmail (userModel.getEmail ()))
+		if (userDAO.existsByEmail (adminUserModel.getEmail ()))
 		{
-			throw new CustomException ("User with email " + userModel.getEmail () + " already exists");
+			throw new CustomException ("User with email " + adminUserModel.getEmail () + " already exists");
 		}
-		User user = authMapper.toUser (userModel);
-		userClient.saveUser (userModel);
+		User user = authMapper.toUser (adminUserModel);
 		user.setPassword (passwordEncoder.encode (user.getPassword ()));
 		User savedUser = userDAO.saveUser (user);
+		UserModel userModel = UserModel.builder ().name (null).email (savedUser.getEmail ()).build ();
+		userClient.saveUser (userModel);
 		EmailModel emailRequest = new EmailModel ();
 		emailRequest.setReceiver (savedUser.getEmail ());
 		emailClient.sendRegisterEmail (emailRequest);
@@ -69,7 +70,7 @@ public class AuthServiceImplementation implements AuthService
 	}
 	@Override
 	@Transactional
-	public void updatePassword (@Valid PasswordUpdateModel passwordUpdateModel)
+	public void updatePassword (PasswordUpdateModel passwordUpdateModel)
 	{
 		CustomPrincipal principal = getCurrentUser ().orElseThrow (() -> new CustomException ("User not authenticated"));
 		User user = userDAO.findById (principal.getId ()).orElseThrow (() -> new CustomException ("User not found."));
@@ -81,7 +82,7 @@ public class AuthServiceImplementation implements AuthService
 		User savedUser = userDAO.saveUser (user);
 		EmailModel emailRequest = new EmailModel ();
 		emailRequest.setReceiver (savedUser.getEmail ());
-		emailClient.sendPasswordChange (emailRequest);
+		emailClient.sendPasswordChangeEmail (emailRequest);
 	}
 	@Override
 	@Transactional

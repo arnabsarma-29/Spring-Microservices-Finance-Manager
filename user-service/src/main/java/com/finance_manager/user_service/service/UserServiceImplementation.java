@@ -13,6 +13,7 @@ import com.finance_manager.user_service.client.AuthClient;
 import com.finance_manager.user_service.client.BudgetClient;
 import com.finance_manager.user_service.client.TransactionClient;
 import com.finance_manager.user_service.dao.UserDAO;
+import com.finance_manager.user_service.entity.User;
 import com.finance_manager.user_service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 @Service
@@ -39,14 +40,30 @@ public class UserServiceImplementation implements UserService
 	}
 	@Transactional
 	@Override
+	public void editName (String name)
+	{
+		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("Current User Not Found!"));
+		User user = userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("User Not Found!"));
+		user.setName (name);
+		try
+		{
+			userDAO.saveUser (user);
+		}
+		catch (Exception e)
+		{
+			throw new CustomException ("Unable to update name at " + LocalDateTime.now (), e);
+		}
+	}
+	@Transactional
+	@Override
 	public void deleteUser (UserDeleteModel userDeleteModel)
 	{
 		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("Current User Not Found!"));
 		try
 		{
 			userDAO.deleteUser (userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("User Not Found")));
-			authClient.deleteUser (userDeleteModel.getPassword ());
-			budgetClient.deleteAllBudget (customPrincipal.getId ());
+			authClient.deleteAuthUser (userDeleteModel.getPassword ());
+			budgetClient.deleteAllBudgets (customPrincipal.getId ());
 			transactionClient.deleteAllTransactions (customPrincipal.getId ());
 		}
 		catch (Exception e)

@@ -91,7 +91,7 @@ public class TransactionServiceImplementation implements TransactionService
 			EmailModel emailRequest = new EmailModel ();
 			emailRequest.setReceiver (customPrincipal.getEmail ());
 			emailRequest.setBody (body.toString ());
-			emailClient.getMonthlyTransactions (emailRequest);
+			emailClient.sendMonthlySummaryEmail (emailRequest);
 			return transactions;
 		}
 		catch (Exception e)
