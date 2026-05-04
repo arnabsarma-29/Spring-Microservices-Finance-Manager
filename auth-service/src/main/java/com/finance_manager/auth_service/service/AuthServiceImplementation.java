@@ -21,7 +21,7 @@ import com.finance_manager.model.EmailModel;
 import com.finance_manager.model.PasswordUpdateModel;
 import com.finance_manager.model.UserLoginModel;
 import com.finance_manager.model.UserModel;
-import com.finance_manager.model.AdminUserModel;
+import com.finance_manager.model.AuthUserModel;
 import com.finance_manager.security.CustomPrincipal;
 import com.finance_manager.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +40,13 @@ public class AuthServiceImplementation implements AuthService
 	private final UserClient userClient;
 	@Override
 	@Transactional
-	public AuthUserDTO register (AdminUserModel adminUserModel)
+	public AuthUserDTO register (AuthUserModel authUserModel)
 	{
-		if (userDAO.existsByEmail (adminUserModel.getEmail ()))
+		if (userDAO.existsByEmail (authUserModel.getEmail ()))
 		{
-			throw new CustomException ("User with email " + adminUserModel.getEmail () + " already exists");
+			throw new CustomException ("User with email " + authUserModel.getEmail () + " already exists");
 		}
-		User user = authMapper.toUser (adminUserModel);
+		User user = authMapper.toUser (authUserModel);
 		user.setPassword (passwordEncoder.encode (user.getPassword ()));
 		User savedUser = userDAO.saveUser (user);
 		UserModel userModel = UserModel.builder ().name (null).email (savedUser.getEmail ()).build ();

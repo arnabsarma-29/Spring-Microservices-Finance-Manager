@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+	<head>
+		<title>Your Profile</title>
+		<style>
+		.container
+		{
+			max-width: 600px;
+			margin: 50px auto;
+			padding: 20px;
+			background: white;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+		.field
+		{
+			margin-bottom: 20px;
+		}
+		label
+		{
+			display: block;
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+		input
+		{
+			width: 100%;
+			padding: 8px;
+			box-sizing: border-box;
+		}
+		.btn
+		{
+			background: #3498db;
+			color: white;
+			border: none;
+			padding: 10px;
+			cursor: pointer;
+		}
+		.danger
+		{
+			background: #e74c3c;
+		}
+		</style>
+	</head>
+	<body>
+		<div class = "container">
+			<h1>Account Settings</h1>
+			<div class = "field">
+				<label>Current Name:</label>
+				<span th:text = "${user.email}">User Email</span>        
+				<form th:action = "@{/profile/editName}" method = "post" style = "margin-top: 10px;">
+					<input type = "text" name = "name" placeholder = "New Name">
+					<button type = "submit" class = "btn">Update Name</button>
+				</form>
+			</div>
+			<hr>
+			<div class = "field">
+				<h3>Change Password</h3>
+				<form th:action = "@{/profile/updatePassword}" method = "post">
+					<label>Old Password</label>
+					<input type = "password" name = "currentPassword">
+					<label>New Password</label>
+					<input type = "password" name = "newPassword">
+					<button type = "submit" class = "btn">Update Password</button>
+				</form>
+			</div>
+			<hr>
+			<form th:action = "@{/profile/deleteUser}" method = "post">
+				<h3>Danger Zone</h3>
+				<p>Verify password to delete account:</p>
+				<input type = "password" name = "password" required>
+				<button type = "submit" class = "btn danger">Delete My Account</button>
+			</form>
+		</div>
+	</body>
+</html>

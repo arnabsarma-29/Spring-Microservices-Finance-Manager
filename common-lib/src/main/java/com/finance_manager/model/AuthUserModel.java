@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminUserModel
+public class AuthUserModel
 {
 	@Email (message = "Invalid email format")
 	@NotBlank (message = "Email can't be blank")

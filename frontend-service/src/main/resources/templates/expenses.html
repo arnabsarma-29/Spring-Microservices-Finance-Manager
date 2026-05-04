@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+        <head>
+                <title>Expenses & Budgets - Finance Manager</title>
+                <link rel = "stylesheet" th:href = "@{/css/style.css}">
+        </head>
+        <body>
+                <div class = "container">
+                        <nav>
+                                <a th:href = "@{/dashboard}">Dashboard</a>
+                                <a th:href = "@{/profile/}">Profile</a>
+                                <form th:action = "@{/logout}" method = "post" style = "display:inline;">
+                                        <button type = "submit">Logout</button>
+                                </form>
+                        </nav>
+
+                        <h2>Manage Your Finances</h2>
+
+                        <!-- Budgets Section -->
+                        <section>
+                                <h3>Budgets</h3>
+                                <form th:action = "@{/expenses/saveBudget}" th:object = "${budgetModel}" method = "post">
+                                        <input type = "text" th:field = "*{category}" placeholder = "Category" required />
+                                        <input type = "number" th:field = "*{amount}" placeholder = "Limit" required />
+                                        <button type = "submit">Set Budget</button>
+                                </form>
+                                <table>
+                                        <tr>
+                                                <th>Category</th>
+                                                <th>Limit</th>
+                                                <th>Action</th>
+                                        </tr>
+                                        <tr th:each = "budget : ${budgets}">
+                                                <td th:text = "${budget.category}"></td>
+                                                <td th:text = "${budget.amount}"></td>
+                                                <td>
+                                                        <form th:action = "@{'/expenses/deleteBudget/' + ${budget.id}}" method = "post">
+                                                                <button type = "submit">Delete</button>
+                                                        </form>
+                                                </td>
+                                        </tr>
+                                </table>
+                        </section>
+                        <hr>
+                        <!-- Transactions Section -->
+                        <section>
+                                <h3>Monthly Transactions</h3>
+                                <form th:action = "@{/expenses/saveTransaction}" th:object = "${transactionModel}" method = "post">
+                                        <input type = "text" th:field = "*{description}" placeholder = "Description" required />
+                                        <input type = "number" th:field = "*{amount}" placeholder = "Amount" required />
+                                        <input type = "text" th:field = "*{category}" placeholder = "Category" />
+                                        <button type = "submit">Add Expense</button>
+                                </form>
+
+                                <table>
+                                        <tr>
+                                                <th>Description</th>
+                                                <th>Category</th>
+                                                <th>Amount</th>
+                                                <th>Date</th>
+                                                <th>Action</th>
+                                        </tr>
+                                        <tr th:each = "tx : ${transactions}">
+                                                <td th:text = "${tx.description}"></td>
+                                                <td th:text = "${tx.category}"></td>
+                                                <td th:text = "${tx.amount}"></td>
+                                                <td th:text = "${#temporals.format(tx.date, 'dd-MM-yyyy')}"></td>
+                                                <td>
+                                                        <form th:action = "@{'/expenses/deleteTransaction/' + ${tx.id}}" method = "post">
+                                                                <button type = "submit">Delete</button>
+                                                        </form>
+                                                </td>
+                                        </tr>
+                                </table>
+                        </section>
+                </div>
+        </body>
+</html>

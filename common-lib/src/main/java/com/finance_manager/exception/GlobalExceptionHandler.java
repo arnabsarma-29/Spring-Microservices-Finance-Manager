@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.finance_manager.response.ResponseStructure;
 import com.finance_manager.util.ResponseHandler;
-@RestControllerAdvice
+@RestControllerAdvice ("backendExceptionHandler")
 public class GlobalExceptionHandler
 {
 	private static final Logger logger = LoggerFactory.getLogger (GlobalExceptionHandler.class);

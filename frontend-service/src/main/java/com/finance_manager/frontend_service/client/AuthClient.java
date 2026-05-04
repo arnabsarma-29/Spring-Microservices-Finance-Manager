@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.finance_manager.dto.AuthResponseDTO;
 import com.finance_manager.dto.AuthUserDTO;
-import com.finance_manager.model.AdminUserModel;
+import com.finance_manager.model.AuthUserModel;
 import com.finance_manager.model.PasswordUpdateModel;
 import com.finance_manager.model.UserLoginModel;
 import com.finance_manager.response.ResponseStructure;
@@ -13,7 +13,7 @@ import com.finance_manager.response.ResponseStructure;
 public interface AuthClient
 {
 	@PostMapping ("/signup")
-	ResponseStructure <AuthUserDTO> signup (@RequestBody AdminUserModel userModel);
+	ResponseStructure <AuthUserDTO> signup (@RequestBody AuthUserModel userModel);
 	@PostMapping ("/login")
 	ResponseStructure <AuthResponseDTO> login (@RequestBody UserLoginModel userLoginModel);
 	@PutMapping ("/updatePassword")

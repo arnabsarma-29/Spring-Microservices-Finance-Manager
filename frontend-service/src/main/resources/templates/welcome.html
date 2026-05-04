@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+        <head>
+                <meta charset = "UTF-8">
+                <title>Welcome - Finance Manager</title>
+                <link rel = "stylesheet" th:href = "@{/css/style.css}">
+        </head>
+        <body>
+                <div class = "container" style = "text-align: center;">
+                        <h1>Welcome to Finance Manager</h1>
+                        <p>Track your budgets and expenses effortlessly.</p>
+
+                        <div class = "button-group">
+                                <a th:href = "@{/login}">
+                                        <button type = "button">Login</button>
+                                </a>
+                                <a th:href = "@{/register}">
+                                        <button type = "button">Register</button>
+                                </a>
+                        </div>
+                </div>
+        </body>
+</html>

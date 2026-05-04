@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+        <head>
+                <title>Login - Finance Manager</title>
+                <link rel = "stylesheet" th:href = "@{/css/style.css}">
+        </head>
+        <body>
+                <div class = "container">
+                        <h2>Login</h2>
+                        <div th:if = "${error}" class = "alert-error" th:text = "${error}"></div>
+                        <form th:action = "@{/profile/login}" th:object = "${loginModel}" method = "post">
+                                <label>Email:</label>
+                                <input type = "email" th:field = "*{email}" required />
+                                <label>Password:</label>
+                                <input type = "password" th:field = "*{password}" required />
+                                <button type = "submit">Login</button>
+                        </form>
+                        <p>Don't have an account? <a th:href = "@{/register}">Register here</a></p>
+                </div>
+        </body>
+</html>

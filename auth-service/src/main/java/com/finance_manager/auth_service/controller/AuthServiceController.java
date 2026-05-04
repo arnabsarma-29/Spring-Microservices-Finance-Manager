@@ -13,9 +13,9 @@ import com.finance_manager.auth_service.service.AuthService;
 import com.finance_manager.dto.AuthResponseDTO;
 import com.finance_manager.dto.AuthUserDTO;
 import com.finance_manager.mapper.RequestMapper;
+import com.finance_manager.model.AuthUserModel;
 import com.finance_manager.model.PasswordUpdateModel;
 import com.finance_manager.model.UserLoginModel;
-import com.finance_manager.model.AdminUserModel;
 import com.finance_manager.response.ResponseStructure;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,9 @@ public class AuthServiceController
 	private final RequestMapper requestMapper;
 	private final AuthService authService;
 	@PostMapping ("/signup")
-	public ResponseEntity <ResponseStructure <AuthUserDTO>> signup (@Valid @RequestBody AdminUserModel userModel)
+	public ResponseEntity <ResponseStructure <AuthUserDTO>> signup (@Valid @RequestBody AuthUserModel authUserModel)
 	{
-		return requestMapper.buildGenerateResponse ("User registered successfully!", HttpStatus.CREATED, authService.register (userModel));
+		return requestMapper.buildGenerateResponse ("User registered successfully!", HttpStatus.CREATED, authService.register (authUserModel));
 	}
 	@PostMapping ("/login")
 	public ResponseEntity <ResponseStructure <AuthResponseDTO>> login (@Valid @RequestBody UserLoginModel userLoginModel)

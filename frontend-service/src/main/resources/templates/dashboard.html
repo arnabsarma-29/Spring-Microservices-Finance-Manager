@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+        <head>
+                <meta charset = "UTF-8">
+                <title>Dashboard - Finance Manager</title>
+                <link rel = "stylesheet" th:href = "@{/css/style.css}">
+        </head>
+        <body>
+                <div class = "container">
+                        <header>
+                                <h1>Finance Dashboard</h1>
+                                <div class = "nav-links">
+                                        <a th:href = "@{/profile/}">Profile</a>
+                                        <a th:href = "@{/expenses}">Expenses</a>
+                                        <form th:action = "@{/logout}" method = "post" style = "display: inline;">
+                                                <button type = "submit">Logout</button>
+                                        </form>
+                                </div>
+                        </header>
+                        <main>
+                                <h2>Hello!</h2>
+                                <p>Select an option from the menu to start managing your money.</p>
+
+                                <div class = "quick-actions">
+                                        <div class = "card">
+                                                <h3>Expenses</h3>
+                                                <p>Add and view transactions.</p>
+                                                <a th:href = "@{/expenses}">Go to Expenses</a>
+                                        </div>
+                                        <div class = "card">
+                                                <h3>Account</h3>
+                                                <p>Update your details.</p>
+                                                <a th:href = "@{/profile/}">View Profile</a>
+                                        </div>
+                                </div>
+                        </main>
+                </div>
+        </body>
+</html>

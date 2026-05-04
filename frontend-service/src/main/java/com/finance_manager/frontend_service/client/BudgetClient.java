@@ -1,8 +1,10 @@
 package com.finance_manager.frontend_service.client;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.finance_manager.dto.BudgetDTO;
@@ -15,6 +17,8 @@ public interface BudgetClient
 	ResponseStructure <Void> saveBudget (@RequestBody BudgetModel budgetModel);
 	@PatchMapping ("/editBudget")
 	ResponseStructure <Void> editBudget (@RequestBody BudgetModel budgetModel);
+	@PostMapping ("/deleteBudget/{id}")
+	ResponseStructure <Void> deleteBudget (@PathVariable UUID id);
 	@GetMapping ("/getAllBudgets")
 	ResponseStructure <List <BudgetDTO>> getAllBudgets ();
 }

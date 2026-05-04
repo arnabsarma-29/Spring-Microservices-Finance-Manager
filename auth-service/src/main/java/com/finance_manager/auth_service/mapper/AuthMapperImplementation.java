@@ -2,11 +2,11 @@ package com.finance_manager.auth_service.mapper;
 import com.finance_manager.auth_service.entity.User;
 import com.finance_manager.dto.AuthUserDTO;
 import com.finance_manager.model.UserLoginModel;
-import com.finance_manager.model.AdminUserModel;
+import com.finance_manager.model.AuthUserModel;
 public class AuthMapperImplementation implements AuthMapper
 {
 	@Override
-	public User toUser (AdminUserModel userModel)
+	public User toUser (AuthUserModel userModel)
 	{
 		return User.builder ().email (userModel.getEmail ()).password (userModel.getPassword ()).build ();
 	}

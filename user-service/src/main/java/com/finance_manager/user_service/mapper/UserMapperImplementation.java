@@ -1,6 +1,5 @@
 package com.finance_manager.user_service.mapper;
 import org.springframework.stereotype.Component;
-
 import com.finance_manager.dto.UserDTO;
 import com.finance_manager.model.UserModel;
 import com.finance_manager.user_service.entity.User;

@@ -25,6 +25,7 @@
                 <spring-cloud.version>2025.1.1</spring-cloud.version>
                 <jjwt.version>0.13.0</jjwt.version>
                 <uuid-creator.version>6.1.1</uuid-creator.version>
+                <org.mapstruct.version>1.6.3</org.mapstruct.version>
         </properties>
         <dependencyManagement>
                 <dependencies>
@@ -57,6 +58,11 @@
                                 <groupId>com.github.f4b6a3</groupId>
                                 <artifactId>uuid-creator</artifactId>
                                 <version>${uuid-creator.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct</artifactId>
+                                <version>${org.mapstruct.version}</version>
                         </dependency>
                 </dependencies>
         </dependencyManagement>
