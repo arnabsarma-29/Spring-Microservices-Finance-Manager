@@ -25,7 +25,7 @@ public class UserController
 	private final UserService userService;
 	private final RequestMapper requestMapper;
 	@PostMapping ("/saveUser")
-	public ResponseEntity <ResponseStructure <Void>> saveUser (@Valid @RequestBody UserModel userModel)
+	public ResponseEntity <ResponseStructure <Void>> saveUser (@RequestBody UserModel userModel)
 	{
 		userService.saveUser (userModel);
 		return requestMapper.buildGenerateResponse ("User saved successfully!", HttpStatus.CREATED);

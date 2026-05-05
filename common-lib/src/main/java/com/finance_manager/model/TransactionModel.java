@@ -16,6 +16,6 @@ public class TransactionModel
 	private Double amount;
 	@NotBlank
 	private String category;
-	@NotBlank
+	@NotNull
 	private TransactionType type; // INCOME / EXPENSE
 }

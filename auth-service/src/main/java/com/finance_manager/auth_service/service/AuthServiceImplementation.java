@@ -1,6 +1,7 @@
 package com.finance_manager.auth_service.service;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,7 +50,7 @@ public class AuthServiceImplementation implements AuthService
 		User user = authMapper.toUser (authUserModel);
 		user.setPassword (passwordEncoder.encode (user.getPassword ()));
 		User savedUser = userDAO.saveUser (user);
-		UserModel userModel = UserModel.builder ().name (null).email (savedUser.getEmail ()).build ();
+		UserModel userModel = UserModel.builder ().id (savedUser.getId ()).name (null).email (savedUser.getEmail ()).build ();
 		userClient.saveUser (userModel);
 		EmailModel emailRequest = new EmailModel ();
 		emailRequest.setReceiver (savedUser.getEmail ());
@@ -69,6 +70,7 @@ public class AuthServiceImplementation implements AuthService
 		return authResponseDTO;
 	}
 	@Override
+	@Modifying
 	@Transactional
 	public void updatePassword (PasswordUpdateModel passwordUpdateModel)
 	{
@@ -85,6 +87,7 @@ public class AuthServiceImplementation implements AuthService
 		emailClient.sendPasswordChangeEmail (emailRequest);
 	}
 	@Override
+	@Modifying
 	@Transactional
 	public void deleteUser (String password)
 	{

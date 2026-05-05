@@ -9,7 +9,7 @@ public class UserMapperImplementation implements UserMapper
 	@Override
 	public User toUser (UserModel userModel)
 	{
-		return User.builder ().email (userModel.getEmail ()).name (userModel.getName ()).build ();
+		return User.builder ().id (userModel.getId ()).email (userModel.getEmail ()).name (userModel.getName ()).build ();
 	}
 	@Override
 	public UserDTO toUserDTO (User user)

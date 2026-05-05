@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import feign.FeignException;
 import jakarta.servlet.http.HttpSession;
-@ControllerAdvice ("frontendExceptionHandler")
-public class GlobalExceptionHandler
+@ControllerAdvice
+public class FrontendExceptionHandler
 {
 	@ExceptionHandler (FeignException.Unauthorized.class)
 	public String handleUnauthorized (HttpSession session, RedirectAttributes redirectAttributes)

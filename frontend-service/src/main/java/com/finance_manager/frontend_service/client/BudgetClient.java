@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.finance_manager.dto.BudgetDTO;
+import com.finance_manager.frontend_service.config.FeignConfig;
 import com.finance_manager.model.BudgetModel;
 import com.finance_manager.response.ResponseStructure;
-@FeignClient (name = "budget-service", url = "http://localhost:8501/budget")
+@FeignClient (name = "budget-service", url = "http://localhost:8501/budget", configuration = FeignConfig.class)
 public interface BudgetClient
 {
 	@PostMapping ("/saveBudget")

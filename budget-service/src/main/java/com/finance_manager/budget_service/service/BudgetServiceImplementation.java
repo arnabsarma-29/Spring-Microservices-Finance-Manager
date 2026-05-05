@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class BudgetServiceImplementation implements BudgetService
 		}
 	}
 	@Override
+	@Modifying
 	@Transactional
 	public void edit (BudgetModel budgetModel)
 	{
@@ -57,6 +59,7 @@ public class BudgetServiceImplementation implements BudgetService
 		}
 	}
 	@Override
+	@Modifying
 	@Transactional
 	public void delete (UUID id)
 	{
@@ -67,6 +70,7 @@ public class BudgetServiceImplementation implements BudgetService
 		budgetDAO.delete (id);
 	}
 	@Override
+	@Modifying
 	@Transactional
 	public void deleteAll (UUID userId)
 	{

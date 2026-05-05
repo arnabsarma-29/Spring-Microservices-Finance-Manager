@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th = "http://www.thymeleaf.org">
         <head>
-                <meta charset = "UTF-8">
+                <meta charset = "UTF-8" />
+                <meta name = "viewport" content = "width=device-width, initial-scale=1.0" />
                 <title>Welcome - Finance Manager</title>
-                <link rel = "stylesheet" th:href = "@{/css/style.css}">
+                <script src = "https://cdn.tailwindcss.com"></script>
+                <link href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel = "stylesheet" />
+                <style>
+                        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top right, #f0f4ff, #f9fafb); }
+                </style>
         </head>
-        <body>
-                <div class = "container" style = "text-align: center;">
-                        <h1>Welcome to Finance Manager</h1>
-                        <p>Track your budgets and expenses effortlessly.</p>
+        <body class = "flex items-center justify-center min-h-screen">
+                <div class = "max-w-2xl px-6 text-center">
+                        <div class = "inline-flex items-center justify-center w-16 h-16 mb-8 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200">
+                                <svg xmlns = "http://www.w3.org/2000/svg" class = "w-8 h-8" fill = "none" viewBox = "0 0 24 24" stroke = "currentColor">
+                                        <path stroke-linecap = "round" stroke-linejoin = "round" stroke-width = "2" d = "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                        </div>
+                        
+                        <h1 class = "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                                Take control of your <span class = "text-blue-600">wealth.</span>
+                        </h1>
+                        
+                        <p class = "text-lg text-gray-600 mb-10 leading-relaxed max-w-lg mx-auto">
+                                Track your budgets and expenses effortlessly with our intuitive Finance Manager.
+                        </p>
 
-                        <div class = "button-group">
-                                <a th:href = "@{/login}">
-                                        <button type = "button">Login</button>
+                        <div class = "flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <a th:href = "@{/login}" class = "w-full sm:w-auto">
+                                        <button type = "button" class = "w-full sm:px-10 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-md active:scale-95">
+                                                Login
+                                        </button>
                                 </a>
-                                <a th:href = "@{/register}">
-                                        <button type = "button">Register</button>
+                                <a th:href = "@{/register}" class = "w-full sm:w-auto">
+                                        <button type = "button" class = "w-full sm:px-10 py-3.5 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-xl border border-gray-200 transition-all shadow-sm active:scale-95">
+                                                Create Account
+                                        </button>
                                 </a>
                         </div>
                 </div>

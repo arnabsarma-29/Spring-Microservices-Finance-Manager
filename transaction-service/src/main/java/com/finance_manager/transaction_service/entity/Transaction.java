@@ -1,6 +1,7 @@
 package com.finance_manager.transaction_service.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import com.finance_manager.util.TransactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,8 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Table (name = "transactions")
 @Entity
+@Table (name = "transactions")
 @Getter
 @Setter
 @NoArgsConstructor

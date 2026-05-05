@@ -52,9 +52,10 @@ public class ProfileController
 		return "redirect:/profile";
 	}
 	@PostMapping ("/deleteUser")
-	public String deleteUser (@ModelAttribute UserDeleteModel userDeleteModel)
+	public String deleteUser (@ModelAttribute UserDeleteModel userDeleteModel, HttpSession httpSession)
 	{
 		userService.deleteUser (userDeleteModel);
+		httpSession.invalidate ();
 		return "redirect:/login";
 	}
 }

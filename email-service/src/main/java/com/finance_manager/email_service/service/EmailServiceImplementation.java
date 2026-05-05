@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import com.finance_manager.email_service.dao.EmailDAO;
+import com.finance_manager.email_service.entity.EmailEntity;
 import com.finance_manager.email_service.mapper.EmailMapper;
 import com.finance_manager.exception.CustomException;
 import com.finance_manager.model.EmailModel;
@@ -25,30 +26,31 @@ public class EmailServiceImplementation implements EmailService
 		this.defaultSender = defaultSender;
 		this.emailMapper = emailMapper;
 	}
-	@Override
 	@Transactional
-	public void sendSimpleEmail (EmailModel emailModel)
+	private void sendSimpleEmail (EmailModel emailModel)
 	{
+		EmailEntity emailEntity = emailMapper.toEmailEntity (emailModel, defaultSender);
 		SimpleMailMessage message = new SimpleMailMessage ();
-		message.setFrom (defaultSender);
-		message.setTo (emailModel.getReceiver ());
-		message.setSubject (emailModel.getSubject ());
-		message.setText (emailModel.getBody ());
+		emailEntity.setSender (defaultSender);
+		message.setFrom (emailEntity.getSender ());
+		message.setTo (emailEntity.getReceiver ());
+		message.setSubject (emailEntity.getSubject ());
+		message.setText (emailEntity.getBody ());
 		try
 		{
 			mailSender.send (message);
 		}
 		catch (Exception e)
 		{
-			throw new CustomException ("Email sending failed for receiver: " + emailModel.getReceiver (), e);
+			throw new CustomException ("Email sending failed for receiver: " + emailEntity.getReceiver (), e);
 		}
 		try
 		{
-			emailDAO.saveEmailInfo (emailMapper.toEmailEntity (emailModel, defaultSender));
+			emailDAO.saveEmailInfo (emailEntity);
 		}
 		catch (Exception e)
 		{
-			throw new CustomException ("Email save failed for receiver: " + emailModel.getReceiver(), e);
+			throw new CustomException ("Email save failed for receiver: " + emailEntity.getReceiver (), e);
 		}
 	}
 	@Override

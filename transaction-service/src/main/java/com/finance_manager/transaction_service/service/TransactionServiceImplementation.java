@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class TransactionServiceImplementation implements TransactionService
 	}
 	@Override
 	@Transactional
+	@Modifying
 	public void delete (UUID id)
 	{
 		try
@@ -53,6 +55,7 @@ public class TransactionServiceImplementation implements TransactionService
 	}
 	@Override
 	@Transactional
+	@Modifying
 	public void deleteAll (UUID userId)
 	{
 		transactionDAO.deleteAll (userId);
@@ -71,33 +74,29 @@ public class TransactionServiceImplementation implements TransactionService
 		}
 	}
 	@Override
-	@Scheduled (cron = "0 0 1 1 * ?")
-	public List <TransactionDTO> getByMonth ()
+	public List <TransactionDTO> getByMonth()
 	{
 		LocalDateTime now = LocalDateTime.now ();
 		int month = now.getMonthValue ();
 		int year = now.getYear ();
 		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("Current User Not Found!"));
-		try
+		return transactionDAO.getByMonth (customPrincipal.getId (), month, year).stream ().map (transactionMapper :: entityToDTO).toList ();
+	}
+	@Scheduled (cron = "0 0 1 1 * ?")
+	public void sendMonthlySummary ()
+	{
+		List <TransactionDTO> transactions = getByMonth ();
+		CustomPrincipal customPrincipal = getCurrentUser ().orElseThrow (() -> new CustomException ("User context missing for schedule"));
+		StringBuilder body = new StringBuilder ("Your Monthly Transactions:\n\n");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern ("dd MMM yyyy, hh:mm a");
+		for (TransactionDTO txn : transactions)
 		{
-			List <TransactionDTO> transactions = transactionDAO.getByMonth (customPrincipal.getId (), month, year).stream ().map (transactionMapper :: entityToDTO).toList ();
-			StringBuilder body = new StringBuilder ();
-			body.append ("Your Monthly Transactions:\n\n");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern ("dd MMM yyyy, hh:mm a");
-			for (TransactionDTO txn : transactions)
-			{
-				body.append ("Date: ").append (txn.getLocalDateTime ().format (formatter)).append ("\nAmount: ₹").append (txn.getAmount ()).append ("\nCategory: ").append (txn.getCategory ()).append ("\nType: ").append (txn.getType ()).append ("\n----------------------\n");
-			}
-			EmailModel emailRequest = new EmailModel ();
-			emailRequest.setReceiver (customPrincipal.getEmail ());
-			emailRequest.setBody (body.toString ());
-			emailClient.sendMonthlySummaryEmail (emailRequest);
-			return transactions;
+			body.append ("Date: ").append (txn.getLocalDateTime ().format (formatter)).append ("\nAmount: ₹").append (txn.getAmount ()).append ("\nCategory: ").append (txn.getCategory ()).append ("\nType: ").append (txn.getType ()).append ("\n----------------------\n");
 		}
-		catch (Exception e)
-		{
-			throw new CustomException ("Failed to fetch transactions at " + LocalDateTime.now (), e);
-		}
+		EmailModel emailRequest = new EmailModel ();
+		emailRequest.setReceiver (customPrincipal.getEmail ());
+		emailRequest.setBody (body.toString ());
+		emailClient.sendMonthlySummaryEmail (emailRequest);
 	}
 	private Optional <CustomPrincipal> getCurrentUser ()
 	{

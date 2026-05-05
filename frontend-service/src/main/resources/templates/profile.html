@@ -1,75 +1,82 @@
 <!DOCTYPE html>
 <html xmlns:th = "http://www.thymeleaf.org">
-	<head>
-		<title>Your Profile</title>
-		<style>
-		.container
-		{
-			max-width: 600px;
-			margin: 50px auto;
-			padding: 20px;
-			background: white;
-			box-shadow: 0 0 10px rgba(0,0,0,0.1);
-		}
-		.field
-		{
-			margin-bottom: 20px;
-		}
-		label
-		{
-			display: block;
-			font-weight: bold;
-			margin-bottom: 5px;
-		}
-		input
-		{
-			width: 100%;
-			padding: 8px;
-			box-sizing: border-box;
-		}
-		.btn
-		{
-			background: #3498db;
-			color: white;
-			border: none;
-			padding: 10px;
-			cursor: pointer;
-		}
-		.danger
-		{
-			background: #e74c3c;
-		}
-		</style>
-	</head>
-	<body>
-		<div class = "container">
-			<h1>Account Settings</h1>
-			<div class = "field">
-				<label>Current Name:</label>
-				<span th:text = "${user.email}">User Email</span>        
-				<form th:action = "@{/profile/editName}" method = "post" style = "margin-top: 10px;">
-					<input type = "text" name = "name" placeholder = "New Name">
-					<button type = "submit" class = "btn">Update Name</button>
-				</form>
-			</div>
-			<hr>
-			<div class = "field">
-				<h3>Change Password</h3>
-				<form th:action = "@{/profile/updatePassword}" method = "post">
-					<label>Old Password</label>
-					<input type = "password" name = "currentPassword">
-					<label>New Password</label>
-					<input type = "password" name = "newPassword">
-					<button type = "submit" class = "btn">Update Password</button>
-				</form>
-			</div>
-			<hr>
-			<form th:action = "@{/profile/deleteUser}" method = "post">
-				<h3>Danger Zone</h3>
-				<p>Verify password to delete account:</p>
-				<input type = "password" name = "password" required>
-				<button type = "submit" class = "btn danger">Delete My Account</button>
-			</form>
-		</div>
-	</body>
+        <head>
+                <meta charset = "UTF-8" />
+                <meta name = "viewport" content = "width=device-width, initial-scale=1.0" />
+                <title>Your Profile - Finance Manager</title>
+                <script src = "https://cdn.tailwindcss.com"></script>
+                <link href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel = "stylesheet" />
+                <style>
+                        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+                </style>
+        </head>
+        <body class = "py-12 px-4">
+                <div class = "max-w-2xl mx-auto space-y-8">
+                        
+                        <!-- Navigation Back Link -->
+                        <div class = "mb-4">
+                                <a th:href = "@{/dashboard}" class = "text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                                        ← Back to Dashboard
+                                </a>
+                        </div>
+
+                        <!-- Header Section -->
+                        <header class = "text-center md:text-left">
+                                <h1 class = "text-3xl font-bold text-gray-900">Account Settings</h1>
+                                <p class = "text-gray-500 mt-1">Manage your identity and security preferences.</p>
+                        </header>
+
+                        <div class = "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                
+                                <!-- Profile Info Section -->
+                                <section class = "p-8 border-b border-gray-100">
+                                        <h3 class = "text-lg font-semibold text-gray-900 mb-4">Personal Details</h3>
+                                        <div class = "flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50 p-4 rounded-xl mb-6">
+                                                <div>
+                                                        <p class = "text-xs font-bold text-gray-400 uppercase tracking-wider">Current Account</p>
+                                                        <p class = "text-gray-800 font-medium" th:text = "${user.email}">user@example.com</p>
+                                                </div>
+                                        </div>
+
+                                        <form th:action = "@{/profile/editName}" method = "post" class = "space-y-3">
+                                                <label class = "text-sm font-medium text-gray-700">Display Name</label>
+                                                <div class = "flex flex-col sm:flex-row gap-2">
+                                                        <input type = "text" name = "name" placeholder = "Enter new name" class = "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all" />
+                                                        <button type = "submit" class = "px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">Update Name</button>
+                                                </div>
+                                        </form>
+                                </section>
+
+                                <!-- Password Section -->
+                                <section class = "p-8">
+                                        <h3 class = "text-lg font-semibold text-gray-900 mb-6">Security</h3>
+                                        <form th:action = "@{/profile/updatePassword}" method = "post" class = "space-y-4 max-w-sm">
+                                                <div>
+                                                        <label class = "block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                                        <input type = "password" name = "currentPassword" class = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                                </div>
+                                                <div>
+                                                        <label class = "block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                                        <input type = "password" name = "newPassword" class = "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                                                </div>
+                                                <button type = "submit" class = "w-full sm:w-auto px-6 py-2.5 bg-gray-900 hover:bg-black text-white font-medium rounded-lg transition-colors">Update Password</button>
+                                        </form>
+                                </section>
+                        </div>
+
+                        <!-- Danger Zone Section -->
+                        <div class = "bg-red-50 rounded-2xl border border-red-100 p-8">
+                                <h3 class = "text-lg font-bold text-red-900">Danger Zone</h3>
+                                <p class = "text-sm text-red-700 mt-1 mb-6">Permanently delete your account and all associated data. This action cannot be undone.</p>
+                                
+                                <form th:action = "@{/profile/deleteUser}" method = "post" class = "flex flex-col sm:flex-row gap-4 items-end sm:items-center">
+                                        <div class = "w-full sm:flex-1">
+                                                <label class = "block text-xs font-bold text-red-800 uppercase mb-1">Confirm Password</label>
+                                                <input type = "password" name = "password" placeholder = "Enter password to delete" class = "w-full px-4 py-2 bg-white border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" required />
+                                        </div>
+                                        <button type = "submit" class = "px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors shadow-sm">Delete Account</button>
+                                </form>
+                        </div>
+                </div>
+        </body>
 </html>

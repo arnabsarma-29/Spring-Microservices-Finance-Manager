@@ -1,6 +1,7 @@
 package com.finance_manager.user_service.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ public class UserServiceImplementation implements UserService
 		}
 	}
 	@Transactional
+	@Modifying
 	@Override
 	public void editName (String name)
 	{
@@ -55,6 +57,7 @@ public class UserServiceImplementation implements UserService
 		}
 	}
 	@Transactional
+	@Modifying
 	@Override
 	public void deleteUser (UserDeleteModel userDeleteModel)
 	{
@@ -62,9 +65,9 @@ public class UserServiceImplementation implements UserService
 		try
 		{
 			userDAO.deleteUser (userDAO.findById (customPrincipal.getId ()).orElseThrow (() -> new CustomException ("User Not Found")));
-			authClient.deleteAuthUser (userDeleteModel.getPassword ());
 			budgetClient.deleteAllBudgets (customPrincipal.getId ());
 			transactionClient.deleteAllTransactions (customPrincipal.getId ());
+			authClient.deleteAuthUser (userDeleteModel.getPassword ());
 		}
 		catch (Exception e)
 		{

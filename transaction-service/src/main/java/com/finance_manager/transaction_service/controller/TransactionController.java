@@ -36,7 +36,7 @@ public class TransactionController
 		transactionService.delete (id);
 		return requestMapper.buildGenerateResponse ("Transaction deleted successfully!", HttpStatus.OK);
 	}
-	@DeleteMapping ("/deleteAllTransactions/{id}")
+	@DeleteMapping ("/deleteAllTransactions/{userId}")
 	public ResponseEntity <ResponseStructure <Void>> deleteAllTransactions (@PathVariable UUID userId)
 	{
 		transactionService.deleteAll (userId);
