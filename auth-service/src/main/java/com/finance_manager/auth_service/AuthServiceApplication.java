@@ -4,7 +4,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-
 import com.finance_manager.config.JwtConfig;
 @SpringBootApplication (scanBasePackages = "com.finance_manager")
 @ConfigurationPropertiesScan

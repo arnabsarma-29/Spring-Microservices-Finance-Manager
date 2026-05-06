@@ -1,3 +1,7 @@
+# --- Security & Secrets ---
+src/main/resources/application-local.properties
+
+# --- Project specific ---
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar

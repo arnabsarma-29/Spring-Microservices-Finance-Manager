@@ -8,17 +8,11 @@
 target/
 
 # Spring Boot - only ignore local/sensitive overrides
-#application-local.properties
+application-local.properties
 #application-dev.properties
-#application-*.local.properties
+application-*.local.properties
 .env
 *.env
-
-# For now ignore all
-application.properties
-application.yml
-application-*.properties
-application-*.yml
 
 # IDE
 .vscode/
