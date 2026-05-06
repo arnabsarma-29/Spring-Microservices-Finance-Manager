@@ -230,5 +230,5 @@ Open in browser: `http://localhost:8080/`
 ---
 
 ## Author
-
-[github.com/arnabsarma-29](https://github.com/arnabsarma-29)
+## Author
+https://github.com/arnabsarma-29
