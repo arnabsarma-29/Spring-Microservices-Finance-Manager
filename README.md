@@ -1,165 +1,234 @@
 # Finance Manager Application
 
-A backend-focused microservices-based finance management system built using Spring Boot for managing authentication, transactions, budgets, and notifications.
+A full-stack microservices ecosystem for comprehensive personal finance management. Built with Spring Boot on the backend and Thymeleaf on the frontend, the system provides a secure, scalable architecture for tracking user identities, transactions, budgets, and automated notifications.
 
 ---
 
 ## Features
 
-- User registration and login with JWT authentication
-- Microservices-based architecture
-- User profile management
-- Transaction tracking (income & expenses)
-- Monthly budget management
-- Email notification logging
-- Centralized exception handling
-- DTO & Mapper pattern implementation
-- Structured API responses
 - Stateless authentication using JWT
+- Microservices-based architecture with service-specific databases
+- Real-time transaction tracking for income and expenses
+- Monthly budget allocation and monitoring
+- Automated email notifications for security and reporting
+- Centralized exception handling and standardized API responses
+- DTO & Mapper pattern implementation for secure data transfer
+- Shared `common-lib` module for reusable components across services
+- Server-side rendered UI with Thymeleaf
 
 ---
 
 ## How It Works
 
 Users authenticate via the Auth Service. After successful registration, user identity (userId, email) is propagated to the User Service.
+
 Each request carries a JWT token. Other services validate the token and extract the userId to process requests securely.
 
-**Auth Service** handles authentication & JWT
-**User Service** stores profile data
-**Transaction Service** manages financial records
-**Budget Service** manages budgets
-**Email Service** logs notifications
+| Service              | Responsibility                                              |
+|----------------------|-------------------------------------------------------------|
+| Auth Service         | Handles authentication & JWT issuance (security gateway)   |
+| User Service         | Stores and manages user profile metadata                    |
+| Transaction Service  | Manages all financial records (income & expenses)           |
+| Budget Service       | Calculates and maintains monthly budget constraints         |
+| Email Service        | Handles SMTP integration for notifications and reports      |
+| Frontend Service     | Consumer-facing UI using server-side rendering (Thymeleaf)  |
+| Common Lib           | Shared DTOs, security, exceptions, and utilities            |
 
-Each microservice has its own database, communicates via REST APIs, and handles its own exceptions.
+Each microservice has its own dedicated PostgreSQL instance, communicates via REST APIs, and handles its own exceptions — preventing cross-service data contamination.
 
 ---
 
 ## Tech Stack
 
-- **Backend:** Java, Spring Boot, Spring MVC
-- **Security:** Spring Security, JWT
-- **Database:** PostgreSQL
-- **Build Tool:** Maven
-- **Architecture:** Microservices
-- **Communication:** REST APIs
-- **JWT Library:** jjwt
+| Layer          | Technology                        |
+|----------------|-----------------------------------|
+| Backend        | Java, Spring Boot, Spring MVC     |
+| Frontend       | Thymeleaf (server-side rendering) |
+| Security       | Spring Security, JWT (jjwt)       |
+| Database       | PostgreSQL                        |
+| Build Tool     | Maven                             |
+| Architecture   | Microservices                     |
+| Communication  | REST APIs                         |
+| Containerization | Docker, Docker Compose          |
 
 ---
 
 ## Project Structure
 
 ```
-src/main/java/com/project/finance_manager/
-    config/
-    controller/
-    service/
-    repository/
-    dao/
-    entity/
-    model/
-    dto/
-    exception/
-
-Main Classes:
-    FinanceManagerApplication.java
-    ServletInitializer.java
+finance-manager/
+|
++-- common-lib/
+|   \-- src/main/java/com/finance_manager/
+|       +-- config/
+|       +-- dto/
+|       +-- exception/
+|       +-- mapper/
+|       +-- model/
+|       +-- response/
+|       +-- security/
+|       +-- service/
+|       \-- util/
+|
++-- auth-service/
+|   \-- src/main/java/com/finance_manager/auth_service/
+|       +-- client/
+|       +-- config/
+|       +-- controller/
+|       +-- dao/
+|       +-- entity/
+|       +-- mapper/
+|       +-- repository/
+|       \-- service/
+|
++-- user-service/
+|   \-- src/main/java/com/finance_manager/user_service/
+|       +-- client/
+|       +-- config/
+|       +-- controller/
+|       +-- dao/
+|       +-- entity/
+|       +-- mapper/
+|       +-- repository/
+|       \-- service/
+|
++-- transaction-service/
+|   \-- src/main/java/com/finance_manager/transaction_service/
+|       +-- client/
+|       +-- config/
+|       +-- controller/
+|       +-- dao/
+|       +-- entity/
+|       +-- mapper/
+|       +-- repository/
+|       \-- service/
+|
++-- budget-service/
+|   \-- src/main/java/com/finance_manager/budget_service/
+|       +-- config/
+|       +-- controller/
+|       +-- dao/
+|       +-- entity/
+|       +-- mapper/
+|       +-- repository/
+|       \-- service/
+|
++-- email-service/
+|   \-- src/main/java/com/finance_manager/email_service/
+|       +-- config/
+|       +-- controller/
+|       +-- dao/
+|       +-- entity/
+|       +-- mapper/
+|       +-- repository/
+|       \-- service/
+|
+\-- frontend-service/
+    \-- src/main/
+        +-- java/com/finance_manager/frontend_service/
+        |   +-- client/
+        |   +-- config/
+        |   +-- controller/
+        |   +-- exception/
+        |   \-- service/
+        \-- resources/
+            \-- templates/
 ```
 
 ---
 
-## Authentication Endpoints
+## API Endpoints
 
+### Authentication
 ```
-POST    /auth/register                  - Register user
-POST    /auth/login                     - Login user and receive JWT
-```
-
----
-
-## User & Profile Endpoints
-
-```
-GET     /users/profile                  - Get user profile
-POST    /users/updateProfile            - Update user profile
-POST    /users/deleteUser               - Delete user
+POST    /auth/signup                         Register a new user
+POST    /auth/login                          Authenticate and retrieve a JWT
+PUT     /auth/updatePassword                 Modify existing credentials
+DELETE  /auth/deleteAuthUser                 Remove authentication identity
 ```
 
----
-
-## Transaction Endpoints
-
+### User Management
 ```
-GET     /transactions/getTransactions   - Get all transactions
-GET     /transactions/saveTransaction   - Show transaction form
-POST    /transactions/saveTransaction   - Save new transaction
-POST    /transactions/deleteTransaction - Delete transaction
+GET     /user/getUser                        Retrieve user profile details
+PUT     /user/editName                       Update profile information
+DELETE  /user/deleteUser                     Remove user data
 ```
 
----
-
-## Budget Endpoints
-
+### Transactions
 ```
-GET     /budgets/getBudgets             - Get all budgets
-GET     /budgets/saveBudget             - Show budget form
-POST    /budgets/saveBudget             - Save new budget
-POST    /budgets/deleteBudget           - Delete budget
+POST    /transaction/saveTransaction         Record a new financial entry
+GET     /transaction/getAllTransactions      Retrieve full transaction history
+GET     /transaction/getMonthlyTransactions  Fetch current month's transactions
+DELETE  /transaction/deleteTransaction/{id}  Remove a specific transaction
 ```
 
----
-
-## Email / Notification Endpoints
-
+### Budgets
 ```
-POST    /email/sendNotification         - Log and send email notification
-GET     /email/getLogs                  - View notification logs
+POST    /budget/saveBudget                   Define a new budget
+PATCH   /budget/editBudget                   Update existing budget parameters
+GET     /budget/getAllBudgets                View all active budgets
+DELETE  /budget/deleteBudget/{id}            Remove a specific budget
+```
+
+### Email Notifications
+```
+POST    /email/sendRegisterEmail             Trigger registration confirmation
+POST    /email/sendLoginEmail                Issue login security alerts
+POST    /email/sendMonthlySummaryEmail       Dispatch monthly financial reports
 ```
 
 ---
 
-## Installation
+## Installation & Deployment
+
+### Prerequisites
+- Docker and Docker Compose
+- Maven (for local builds)
+
+### Automated Deployment (Docker) — Recommended
+
+The system is configured for multi-container orchestration. To perform a clean installation and start all services:
+
+```bash
+docker compose down --rmi all --volumes --remove-orphans
+docker compose up -d --build
+```
+
+### Manual Build & Run
 
 ```bash
 git clone https://github.com/arnabsarma-29/finance-manager.git
 cd finance-manager
 mvn clean install
-```
-
----
-
-## Run Application
-
-```bash
 mvn spring-boot:run
 ```
 
-Open in browser:
-http://localhost:8080/
+Open in browser: `http://localhost:8080/`
 
 ---
 
 ## Key Concepts
 
-- Microservices architecture
-- Stateless JWT authentication
-- Spring Security
-- DTO & Mapper pattern
-- Centralized exception handling
-- REST API communication
-- Layered architecture
+- Microservices architecture with isolated databases per service
+- Stateless JWT authentication propagated via token claims
+- Shared `common-lib` for DTOs, security filters, exceptions, and utilities
+- DTO & Mapper pattern for safe data transfer between layers
+- Centralized exception handling with structured API responses
+- REST API inter-service communication
+- Server-side rendering via Thymeleaf
 
 ---
 
-## Notes
+## Development Notes
 
-- Configure PostgreSQL in each service's application.properties
-- JWT secret key must be set before running
-- Each microservice runs independently on its own port
-- All protected routes require a valid Bearer token
-- User identity is propagated across services via JWT claims
+- **Health Monitoring:** Spring Actuator endpoints are used for health checks. The Auth Service includes a pre-configured check to ensure availability within the container network.
+- **Security:** All protected routes require a valid Bearer token. Security filters permit internal health checks while enforcing strict authorization on user-facing endpoints.
+- **Data Isolation:** Each microservice uses its own dedicated PostgreSQL instance to prevent cross-service data contamination.
+- **Configuration:** Set PostgreSQL credentials in each service's `application.properties`. JWT secret key must be configured before running.
+- **Ports:** Each microservice runs independently on its own port.
 
 ---
 
 ## Author
 
-https://github.com/arnabsarma-29
+[github.com/arnabsarma-29](https://github.com/arnabsarma-29)
