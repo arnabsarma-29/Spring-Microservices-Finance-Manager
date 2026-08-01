@@ -1,0 +1,11 @@
+package com.finance_manager.budget_service;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication (scanBasePackages = "com.finance_manager")
+public class BudgetServiceApplication
+{
+	public static void main (String [] args)
+	{
+		SpringApplication.run (BudgetServiceApplication.class, args);
+	}
+}

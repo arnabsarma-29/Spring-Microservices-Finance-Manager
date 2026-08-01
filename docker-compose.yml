@@ -1,0 +1,258 @@
+services:
+        # Auth Database
+        auth-db:
+                image: postgres:18-alpine
+                container_name: auth-db
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASSWORD}
+                        POSTGRES_DB: authdb
+                ports:
+                        - "5432:5432"
+                healthcheck:
+                        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d authdb"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+
+        # Auth Service
+        auth-service:
+                build:
+                        context: .
+                        dockerfile: auth-service/Dockerfile
+                container_name: auth-service       
+                ports:
+                        - "8580:8500"
+                environment:
+                        # Database connection details
+                        - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5432/authdb
+                        - DB_USER=${DB_USER}
+                        - DB_PASSWORD=${DB_PASSWORD}
+
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8500/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s
+                depends_on:
+                        auth-db:
+                                condition: service_healthy
+
+        # Budget Database
+        budget-db:
+                image: postgres:18-alpine
+                container_name: budget-db
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASSWORD}
+                        POSTGRES_DB: budgetdb
+                ports:
+                        - "5433:5432"
+                healthcheck:
+                        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d budgetdb"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+
+        # Budget Service
+        budget-service:
+                build:
+                        context: .
+                        dockerfile: budget-service/Dockerfile
+                container_name: budget-service
+                ports:
+                        - "8501:8501"
+                environment:
+                        # Database connection details
+                        - SPRING_DATASOURCE_URL=jdbc:postgresql://budget-db:5432/budgetdb
+                        - DB_USER=${DB_USER}
+                        - DB_PASSWORD=${DB_PASSWORD}
+
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8501/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s                    
+                depends_on:
+                        budget-db:
+                                condition: service_healthy
+                        transaction-service:
+                                condition: service_healthy
+        # Email Database
+        email-db:
+                image: postgres:18-alpine
+                container_name: email-db
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASSWORD}
+                        POSTGRES_DB: emaildb
+                ports:
+                        - "5434:5432"
+                healthcheck:
+                        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d emaildb"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+
+        # Email Service
+        email-service:
+                build:
+                        context: .
+                        dockerfile: email-service/Dockerfile
+                container_name: email-service
+                ports:
+                        - "8502:8502"
+                environment:
+                        # Database connection details
+                        - SPRING_DATASOURCE_URL=jdbc:postgresql://email-db:5432/emaildb
+                        - DB_USER=${DB_USER}
+                        - DB_PASSWORD=${DB_PASSWORD}
+
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+                        - SPRING_MAIL_USERNAME=${EMAIL_USER}
+                        - SPRING_MAIL_PASSWORD=${EMAIL_PASSWORD}
+
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8502/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s
+                depends_on:
+                        email-db:
+                                condition: service_healthy
+                        user-service:
+                                condition: service_healthy
+
+        # Frontend Service
+        frontend-service:
+                build:
+                        context: .
+                        dockerfile: frontend-service/Dockerfile
+                container_name: frontend-service
+                ports:
+                        - "8505:8505"
+                environment:
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8502/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s
+                depends_on:
+                        budget-service:
+                                condition: service_healthy
+
+        # Transaction Database
+        transaction-db:
+                image: postgres:18-alpine
+                container_name: transaction-db
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASSWORD}
+                        POSTGRES_DB: transactiondb
+                ports:
+                        - "5435:5432"
+                healthcheck:
+                        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d transactiondb"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+        
+        # Transaction Service
+        transaction-service:
+                build:
+                        context: .
+                        dockerfile: transaction-service/Dockerfile
+                container_name: transaction-service
+                ports:
+                        - "8503:8503"
+                environment:
+                        # Database connection details
+                        - SPRING_DATASOURCE_URL=jdbc:postgresql://transaction-db:5432/transactiondb
+                        - DB_USER=${DB_USER}
+                        - DB_PASSWORD=${DB_PASSWORD}
+
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+                        
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8503/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s
+                depends_on:
+                        transaction-db:
+                                condition: service_healthy
+                        email-service:
+                                condition: service_healthy
+
+        # User Database
+        user-db:
+                image: postgres:18-alpine
+                container_name: user-db
+                environment:
+                        POSTGRES_USER: ${DB_USER}
+                        POSTGRES_PASSWORD: ${DB_PASSWORD}
+                        POSTGRES_DB: userdb
+                ports:
+                        - "5436:5432"
+                healthcheck:
+                        test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d userdb"]
+                        interval: 5s
+                        timeout: 5s
+                        retries: 5
+
+        # User Service
+        user-service:
+                build:
+                        context: .
+                        dockerfile: user-service/Dockerfile
+                container_name: user-service
+                ports:
+                        - "8504:8504"
+                environment:
+                        # Database connection details
+                        - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/userdb
+                        - DB_USER=${DB_USER}
+                        - DB_PASSWORD=${DB_PASSWORD}
+
+                        # Security details
+                        - JWT_SECRET=${JWT_SECRET}
+                        
+                        # Spring Profile
+                        - SPRING_PROFILES_ACTIVE=docker
+                healthcheck:
+                        test: ["CMD", "curl", "-f", "http://localhost:8504/actuator/health"]
+                        interval: 10s
+                        timeout: 5s
+                        retries: 10
+                        start_period: 30s
+                depends_on:
+                        user-db:
+                                condition: service_healthy
+                        auth-service:
+                                condition: service_healthy

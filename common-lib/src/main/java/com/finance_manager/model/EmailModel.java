@@ -1,0 +1,19 @@
+package com.finance_manager.model;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmailModel
+{
+	@NotBlank
+	@Email
+	private String receiver;
+	private String subject;
+	private String body;
+}
